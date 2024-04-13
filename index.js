@@ -1,4 +1,5 @@
-export function extend(target, fn) {
+export function attach(target, fn) {
     const symbol = Symbol(fn?.name)
-    target[symbol] = fn
+    Object.defineProperty(target, symbol, { configurable: true, get: fn })
+    return symbol
 }
