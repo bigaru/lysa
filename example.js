@@ -1,4 +1,4 @@
-import { camelCase, kebabCase, snakeCase } from './string/index.js'
+import { camelCase, kebabCase, snakeCase } from './index.js'
 
 const text = 'foo bar'
-console.log(text, text[camelCase], text[kebabCase], text[snakeCase])
+console.log(text, text[camelCase](), text[kebabCase](), text[snakeCase]())

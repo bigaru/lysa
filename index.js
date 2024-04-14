@@ -1,5 +1,9 @@
+import './string.js'
+
+export * from './symbols.js'
+
 export function attach(target, fn) {
     const symbol = Symbol(fn?.name)
-    Object.defineProperty(target, symbol, { configurable: true, get: fn })
+    target[symbol] = fn
     return symbol
 }
