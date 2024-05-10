@@ -1,1 +1,1 @@
-export const foo = 34
+export { lazyInit } from './lazy.js'
