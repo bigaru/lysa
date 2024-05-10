@@ -1,21 +1,26 @@
 {
-    "name": "lysa",
+    "name": "@lysa/core",
     "description": "",
     "version": "0.0.1",
     "author": "bigaru",
-    "main": "index.js",
     "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "/dist"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/bigaru/lysa.git"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "tsc"
     },
     "dependencies": {
         "lodash": "^4.17.21"
     },
     "devDependencies": {
-        "prettier": "^3.2.5"
+        "prettier": "^3.2.5",
+        "typescript": "^5.4.5"
     }
 }
