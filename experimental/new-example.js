@@ -1,4 +1,4 @@
-import { lazyInit } from '../dist/index.js'
+import { lazyInit, x } from '../dist/index.js'
 
 function sleep(seconds) {
     var e = new Date().getTime() + seconds * 1000
@@ -16,3 +16,5 @@ console.log('-', supercat)
 console.log('--->2')
 console.log('-', supercat)
 console.log('--->3')
+
+x`console.log('meow', #0 +  #1 * #2)`(1, 2, 3)
