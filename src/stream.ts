@@ -7,7 +7,9 @@ abstract class BaseStream {
 
     filter(filterFn: (element) => boolean) {
         const stream = {
+            __proto__: BaseStream.prototype,
             parent: this as BaseStream,
+
             each(callback: Callback) {
                 this.parent.each((item) => {
                     if (filterFn(item)) {
@@ -17,13 +19,14 @@ abstract class BaseStream {
             },
         }
 
-        Object.setPrototypeOf(stream, this)
         return stream
     }
 
     map(mapFn: (element) => any) {
         const stream = {
+            __proto__: BaseStream.prototype,
             parent: this as BaseStream,
+
             each(callback: Callback) {
                 this.parent.each((item) => {
                     callback(mapFn(item))
@@ -31,7 +34,6 @@ abstract class BaseStream {
             },
         }
 
-        Object.setPrototypeOf(stream, this)
         return stream
     }
 }
@@ -49,23 +51,5 @@ export class Stream extends BaseStream {
         for (let i = 0; i < this.value.length; i++) {
             callback(this.value[i])
         }
-    }
-}
-
-class FilterStream extends BaseStream {
-    filterFn
-
-    constructor(parent: BaseStream, filterFn: (element) => boolean) {
-        super()
-        this.parent = parent
-        this.filterFn = filterFn
-    }
-
-    each(callback: Callback): void {
-        this.parent.each((item) => {
-            if (this.filterFn(item)) {
-                callback(item)
-            }
-        })
     }
 }
