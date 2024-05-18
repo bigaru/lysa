@@ -1,7 +1,10 @@
-abstract class Stream<A> {
+export abstract class Stream<A> {
     protected parent: Stream<A>
 
     abstract each(callback: (item: A) => void): void
+    forEach(callback: (item: A) => void): void {
+        this.each(callback)
+    }
 
     filter(filterFn: (element: A) => boolean) {
         return new FilterStream<A>(this, filterFn)
@@ -9,6 +12,16 @@ abstract class Stream<A> {
 
     map<B>(mapFn: (element: A) => B) {
         return new MapStream<B>(this, mapFn)
+    }
+
+    toArray(): A[] {
+        let result: A[] = []
+
+        this.each((item) => {
+            result.push(item)
+        })
+
+        return result
     }
 }
 

@@ -14,12 +14,15 @@
         "url": "https://github.com/bigaru/lysa.git"
     },
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "start": "bun run experimental/new-example.js",
+        "test": "bun test"
     },
     "dependencies": {
         "lodash": "^4.17.21"
     },
     "devDependencies": {
+        "@types/bun": "^1.1.2",
         "prettier": "^3.2.5",
         "typescript": "^5.4.5"
     }
