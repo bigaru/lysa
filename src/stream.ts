@@ -1,55 +1,63 @@
-type Callback = (evaluatedItem: any) => any
+abstract class Stream<A> {
+    protected parent: Stream<A>
 
-abstract class BaseStream {
-    parent
+    abstract each(callback: (item: A) => void): void
 
-    abstract each(callback: Callback): void
-
-    filter(filterFn: (element) => boolean) {
-        const stream = {
-            __proto__: BaseStream.prototype,
-            parent: this as BaseStream,
-
-            each(callback: Callback) {
-                this.parent.each((item) => {
-                    if (filterFn(item)) {
-                        callback(item)
-                    }
-                })
-            },
-        }
-
-        return stream
+    filter(filterFn: (element: A) => boolean) {
+        return new FilterStream<A>(this, filterFn)
     }
 
-    map(mapFn: (element) => any) {
-        const stream = {
-            __proto__: BaseStream.prototype,
-            parent: this as BaseStream,
-
-            each(callback: Callback) {
-                this.parent.each((item) => {
-                    callback(mapFn(item))
-                })
-            },
-        }
-
-        return stream
+    map<B>(mapFn: (element: A) => B) {
+        return new MapStream<B>(this, mapFn)
     }
 }
 
-export class Stream extends BaseStream {
-    parent = null
-    value: any[]
+export class BaseStream<T> extends Stream<T> {
+    protected parent = null
+    value: T[]
 
-    constructor(value: any[]) {
+    constructor(value: T[]) {
         super()
         this.value = value
     }
 
-    each(callback: Callback): void {
+    each(callback: (item: T) => void): void {
         for (let i = 0; i < this.value.length; i++) {
             callback(this.value[i])
         }
+    }
+}
+
+class FilterStream<T> extends Stream<T> {
+    #filterFn
+
+    constructor(parent, filterFn) {
+        super()
+        this.parent = parent
+        this.#filterFn = filterFn
+    }
+
+    each(callback: (item: T) => void) {
+        this.parent.each((item) => {
+            if (this.#filterFn(item)) {
+                callback(item)
+            }
+        })
+    }
+}
+
+class MapStream<T> extends Stream<T> {
+    #mapFn
+
+    constructor(parent, filterFn) {
+        super()
+        this.parent = parent
+        this.#mapFn = filterFn
+    }
+
+    each(callback: (item: T) => void) {
+        this.parent.each((item) => {
+            callback(this.#mapFn(item))
+        })
     }
 }
