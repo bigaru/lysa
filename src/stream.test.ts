@@ -14,6 +14,13 @@ test('chunk: non-positive size throws error', () => {
     }).toThrow('size must be positive')
 })
 
+test('compact', () => {
+    const arr = [1, null, undefined, 0, 'foo', '']
+    let newArr = use(arr).compact().toArray()
+
+    expect(newArr).toStrictEqual([1, 'foo'])
+})
+
 test('filter', () => {
     const arr = [...Array(10).keys()]
     let newArr = use(arr)

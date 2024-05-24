@@ -27,6 +27,10 @@ export class Stream<A> {
         return this as any
     }
 
+    compact(): Stream<A> {
+        return this.filter(Boolean)
+    }
+
     filter(filterFn: (item: A) => boolean): Stream<A> {
         const creator = (parent) => new FilterIterator(parent, filterFn)
         this.iteratorCreators.push(creator)
