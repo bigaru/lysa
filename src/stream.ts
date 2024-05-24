@@ -17,6 +17,16 @@ export class Stream<A> {
         }
     }
 
+    chunk(size: number): Stream<A[]> {
+        if (size <= 0) {
+            throw new Error('size must be positive')
+        }
+
+        const creator = (parent) => new ChunkIterator(parent, size)
+        this.iteratorCreators.push(creator)
+        return this as any
+    }
+
     filter(filterFn: (item: A) => boolean): Stream<A> {
         const creator = (parent) => new FilterIterator(parent, filterFn)
         this.iteratorCreators.push(creator)
@@ -26,7 +36,7 @@ export class Stream<A> {
     map<B>(mapFn: (item: A) => B): Stream<B> {
         const creator = (parent) => new MapIterator(parent, mapFn)
         this.iteratorCreators.push(creator)
-        return this as unknown as Stream<B>
+        return this as any
     }
 
     toArray(): A[] {
@@ -46,6 +56,33 @@ class BaseIterator<T> implements Iterator<T> {
     }
 }
 
+class ChunkIterator<A> implements Iterator<A[]> {
+    #parent: Iterator<A>
+    #size: number
+
+    constructor(parent: Iterator<A>, size: number) {
+        this.#parent = parent
+        this.#size = size
+    }
+
+    next(): IteratorResult<A[]> {
+        const chunk: A[] = []
+        let current = this.#parent.next()
+
+        while (!current.done) {
+            chunk.push(current.value)
+
+            if (chunk.length === this.#size) {
+                return { done: false, value: chunk }
+            }
+
+            current = this.#parent.next()
+        }
+
+        return { done: chunk.length === 0, value: chunk }
+    }
+}
+
 class FilterIterator<T> implements Iterator<T> {
     #parent: Iterator<T>
     #filterFn: (item: T) => boolean
@@ -55,7 +92,7 @@ class FilterIterator<T> implements Iterator<T> {
         this.#filterFn = filterFn
     }
 
-    next(): IteratorResult<T, T | undefined> {
+    next(): IteratorResult<T> {
         let current = this.#parent.next()
 
         while (!current.done) {
@@ -79,7 +116,7 @@ class MapIterator<A, B> implements Iterator<B> {
         this.#mapFn = mapFn
     }
 
-    next(): IteratorResult<B, B | undefined> {
+    next(): IteratorResult<B> {
         const { done, value } = this.#parent.next()
         return { done, value: this.#mapFn(value) }
     }
