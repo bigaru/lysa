@@ -31,6 +31,12 @@ export class Stream<A> {
         return this.filter(Boolean)
     }
 
+    concat(...arrays: Array<Iterable<A>>) {
+        const creator = (parent) => new ConcatIterator(parent, arrays)
+        this.iteratorCreators.push(creator)
+        return this
+    }
+
     filter(filterFn: (item: A) => boolean): Stream<A> {
         const creator = (parent) => new FilterIterator(parent, filterFn)
         this.iteratorCreators.push(creator)
@@ -84,6 +90,48 @@ class ChunkIterator<A> implements Iterator<A[]> {
         }
 
         return { done: chunk.length === 0, value: chunk }
+    }
+}
+
+class ConcatIterator<A> implements Iterator<A> {
+    #parent: Iterator<A>
+
+    #arrayIterator: Iterator<Iterable<A>>
+    #elementIterator: Iterator<A>
+
+    constructor(parent: Iterator<A>, arrays: Array<Iterable<A>>) {
+        this.#parent = parent
+        this.#arrayIterator = arrays[Symbol.iterator]()
+
+        const element = this.#arrayIterator.next()
+        if (!element.done) {
+            this.#elementIterator = element.value[Symbol.iterator]()
+        }
+    }
+
+    next(): IteratorResult<A> {
+        const parentItem = this.#parent.next()
+
+        if (!parentItem.done) {
+            return parentItem
+        }
+
+        let newItem = this.#elementIterator.next()
+        if (!newItem.done) {
+            return newItem
+        }
+
+        const element = this.#arrayIterator.next()
+        if (!element.done) {
+            this.#elementIterator = element.value[Symbol.iterator]()
+        }
+
+        newItem = this.#elementIterator.next()
+        if (!newItem.done) {
+            return newItem
+        }
+
+        return { done: true, value: undefined }
     }
 }
 

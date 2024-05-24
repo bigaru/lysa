@@ -21,6 +21,20 @@ test('compact', () => {
     expect(newArr).toStrictEqual([1, 'foo'])
 })
 
+test('concat', () => {
+    const arr = [1, 2, 3]
+    let newArr = use(arr).concat([4, 5, 6]).toArray()
+
+    expect(newArr).toStrictEqual([1, 2, 3, 4, 5, 6])
+})
+
+test('concat', () => {
+    const arr = [1, 2, 3]
+    let newArr = use(arr).concat([4, 5], [6, 7]).toArray()
+
+    expect(newArr).toStrictEqual([1, 2, 3, 4, 5, 6, 7])
+})
+
 test('filter', () => {
     const arr = [...Array(10).keys()]
     let newArr = use(arr)
