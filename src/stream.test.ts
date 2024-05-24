@@ -19,7 +19,7 @@ test('map', () => {
     expect(newArr).toStrictEqual(['#0', '#1', '#2', '#3', '#4'])
 })
 
-test('filter and map', () => {
+test('mix: filter, map', () => {
     const arr = [...Array(10).keys()]
     let newArr = use(arr)
         .filter((i) => i % 2 === 0)
@@ -31,7 +31,7 @@ test('filter and map', () => {
 
 test('forEach', () => {
     const arr = [...Array(5).keys()]
-    let newArr = []
+    let newArr: any = []
 
     use(arr).forEach((i) => {
         newArr.push(i)

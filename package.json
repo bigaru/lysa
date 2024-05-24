@@ -14,12 +14,8 @@
         "url": "https://github.com/bigaru/lysa.git"
     },
     "scripts": {
-        "build": "tsc",
-        "start": "bun run experimental/new-example.js",
+        "build": "bunx tsc",
         "test": "bun test"
-    },
-    "dependencies": {
-        "lodash": "^4.17.21"
     },
     "devDependencies": {
         "@types/bun": "^1.1.2",
