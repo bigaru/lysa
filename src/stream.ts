@@ -1,21 +1,32 @@
-export abstract class Stream<A, C = A> {
-    protected parent: Stream<C>;
+export class Stream<A> {
+    value: Iterable<A>
+    iteratorCreators: Array<(it: Iterator<any>) => Iterator<any>> = []
 
-    abstract [Symbol.iterator](): Iterator<A>
+    constructor(value: Iterable<A>) {
+        this.value = value
+    }
+
+    [Symbol.iterator](): Iterator<A> {
+        const lastIterator = this.iteratorCreators.reduce((parent, creator) => creator(parent), new BaseIterator(this) as Iterator<any>)
+        return lastIterator
+    }
 
     forEach = (callback: (item: A) => void): void => {
         for (const item of this) {
             callback(item)
         }
     }
-    each = this.forEach
 
-    filter(filterFn: (element: A) => boolean): Stream<A> {
-        return new FilterStream<A>(this, filterFn)
+    filter(filterFn: (item: A) => boolean): Stream<A> {
+        const creator = (parent) => new FilterIterator(parent, filterFn)
+        this.iteratorCreators.push(creator)
+        return this
     }
 
-    map<B>(mapFn: (element: A) => B): Stream<B, A> {
-        return new MapStream<A, B>(this, mapFn)
+    map<B>(mapFn: (item: A) => B): Stream<B> {
+        const creator = (parent) => new MapIterator(parent, mapFn)
+        this.iteratorCreators.push(creator)
+        return this as unknown as Stream<B>
     }
 
     toArray(): A[] {
@@ -23,24 +34,10 @@ export abstract class Stream<A, C = A> {
     }
 }
 
-export class BaseStream<T> extends Stream<T> {
-    protected parent = null
-    value: Iterable<T>
-
-    constructor(value: Iterable<T>) {
-        super()
-        this.value = value
-    }
-
-    [Symbol.iterator](): Iterator<T> {
-        return new BaseIterator(this)
-    }
-}
-
 class BaseIterator<T> implements Iterator<T> {
     #iterator: Iterator<T>
 
-    constructor(stream: BaseStream<T>) {
+    constructor(stream: Stream<T>) {
         this.#iterator = stream.value[Symbol.iterator]()
     }
 
@@ -49,26 +46,12 @@ class BaseIterator<T> implements Iterator<T> {
     }
 }
 
-class FilterStream<T> extends Stream<T> {
-    #filterFn: (item: T) => boolean
-
-    constructor(parent: Stream<T>, filterFn: (item: T) => boolean) {
-        super()
-        this.parent = parent
-        this.#filterFn = filterFn
-    }
-
-    [Symbol.iterator](): Iterator<T> {
-        return new FilterIterator(this.parent, this.#filterFn)
-    }
-}
-
 class FilterIterator<T> implements Iterator<T> {
     #parent: Iterator<T>
     #filterFn: (item: T) => boolean
 
-    constructor(parent: Stream<T>, filterFn: (item: T) => boolean) {
-        this.#parent = parent[Symbol.iterator]()
+    constructor(parent: Iterator<T>, filterFn: (item: T) => boolean) {
+        this.#parent = parent
         this.#filterFn = filterFn
     }
 
@@ -87,26 +70,12 @@ class FilterIterator<T> implements Iterator<T> {
     }
 }
 
-class MapStream<A, B> extends Stream<B, A> {
-    #mapFn: (item: A) => B
-
-    constructor(parent: Stream<A>, mapFn: (item: A) => B) {
-        super()
-        this.parent = parent
-        this.#mapFn = mapFn
-    }
-
-    [Symbol.iterator](): Iterator<B> {
-        return new MapIterator(this.parent, this.#mapFn)
-    }
-}
-
 class MapIterator<A, B> implements Iterator<B> {
     #parent: Iterator<A>
     #mapFn: (item: A) => B
 
-    constructor(parent: Stream<A>, mapFn) {
-        this.#parent = parent[Symbol.iterator]()
+    constructor(parent: Iterator<A>, mapFn: (item: A) => B) {
+        this.#parent = parent
         this.#mapFn = mapFn
     }
 
