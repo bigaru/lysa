@@ -95,17 +95,17 @@ class ChunkIterator<A> implements Iterator<A[]> {
 
 class ConcatIterator<A> implements Iterator<A> {
     #parent: Iterator<A>
+    #iterator: Iterator<A>
 
-    #arrayIterator: Iterator<Iterable<A>>
-    #elementIterator: Iterator<A>
+    #iterableArray: Array<Iterable<A>>
+    #index = 0
 
     constructor(parent: Iterator<A>, arrays: Array<Iterable<A>>) {
         this.#parent = parent
-        this.#arrayIterator = arrays[Symbol.iterator]()
+        this.#iterableArray = arrays
 
-        const element = this.#arrayIterator.next()
-        if (!element.done) {
-            this.#elementIterator = element.value[Symbol.iterator]()
+        if (arrays.length > 0) {
+            this.#iterator = arrays[this.#index][Symbol.iterator]()
         }
     }
 
@@ -116,17 +116,13 @@ class ConcatIterator<A> implements Iterator<A> {
             return parentItem
         }
 
-        let newItem = this.#elementIterator.next()
-        if (!newItem.done) {
-            return newItem
+        let newItem = this.#iterator?.next() ?? { done: true, value: undefined }
+
+        if (newItem.done && ++this.#index < this.#iterableArray.length) {
+            this.#iterator = this.#iterableArray[this.#index][Symbol.iterator]()
+            newItem = this.#iterator.next()
         }
 
-        const element = this.#arrayIterator.next()
-        if (!element.done) {
-            this.#elementIterator = element.value[Symbol.iterator]()
-        }
-
-        newItem = this.#elementIterator.next()
         if (!newItem.done) {
             return newItem
         }

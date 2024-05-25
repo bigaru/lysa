@@ -23,16 +23,18 @@ test('compact', () => {
 
 test('concat', () => {
     const arr = [1, 2, 3]
-    let newArr = use(arr).concat([4, 5, 6]).toArray()
+    let newArr = use(arr)
+        .concat([4, 5], [6, 7], new Set([8, 9, 10]))
+        .toArray()
 
-    expect(newArr).toStrictEqual([1, 2, 3, 4, 5, 6])
+    expect(newArr).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 })
 
-test('concat', () => {
+test('concat empty argument', () => {
     const arr = [1, 2, 3]
-    let newArr = use(arr).concat([4, 5], [6, 7]).toArray()
+    let newArr = use(arr).concat().toArray()
 
-    expect(newArr).toStrictEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(newArr).toStrictEqual([1, 2, 3])
 })
 
 test('filter', () => {
