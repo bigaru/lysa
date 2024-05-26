@@ -61,6 +61,12 @@ export class Stream<A> {
         this.#iteratorCreators.push(creator)
         return this as any
     }
+
+    slice(begin: number = 0, end?: number): Stream<A> {
+        const creator = (parent) => new SliceIterator(parent, begin, end)
+        this.#iteratorCreators.push(creator)
+        return this
+    }
 }
 
 class BaseIterator<T> implements Iterator<T> {
@@ -137,6 +143,36 @@ class ConcatIterator<A> implements Iterator<A> {
         }
 
         return { done: true, value: undefined }
+    }
+}
+
+class SliceIterator<T> implements Iterator<T> {
+    #parent: Iterator<T>
+    #index = -1
+
+    #begin: number
+    #end: number
+
+    constructor(parent: Iterator<T>, begin: number = 0, end: number = 0) {
+        this.#parent = parent
+        this.#begin = begin
+        this.#end = end
+    }
+
+    next(): IteratorResult<T> {
+        let current = this.#parent.next()
+        this.#index++
+
+        while (!current.done) {
+            if (this.#begin <= this.#index && (!this.#end || this.#index < this.#end)) {
+                return current
+            }
+
+            current = this.#parent.next()
+            this.#index++
+        }
+
+        return current
     }
 }
 

@@ -1,6 +1,26 @@
 import { expect, test } from 'bun:test'
 import { use } from './index.js'
 
+test('forEach', () => {
+    const arr = [...Array(5).keys()]
+    let newArr: any = []
+
+    use(arr).forEach((i) => {
+        newArr.push(i)
+    })
+
+    expect(newArr).toStrictEqual([0, 1, 2, 3, 4])
+})
+
+test('spread into array', () => {
+    const arr = [...Array(10).keys()]
+    let newArr = use(arr)
+        .filter((i) => i % 2 === 0)
+        .map((i) => '#' + i)
+
+    expect([...newArr]).toStrictEqual(['#0', '#2', '#4', '#6', '#8'])
+})
+
 test('chunk', () => {
     const arr = [...Array(10).keys()]
     let newArr = use(arr).chunk(3).toArray()
@@ -55,24 +75,39 @@ test('map', () => {
     expect(newArr).toStrictEqual(['#0', '#1', '#2', '#3', '#4'])
 })
 
-test('forEach', () => {
+test('slice: empty arguments', () => {
     const arr = [...Array(5).keys()]
-    let newArr: any = []
-
-    use(arr).forEach((i) => {
-        newArr.push(i)
-    })
+    let newArr = use(arr).slice().toArray()
 
     expect(newArr).toStrictEqual([0, 1, 2, 3, 4])
 })
 
-test('spread into array', () => {
-    const arr = [...Array(10).keys()]
-    let newArr = use(arr)
-        .filter((i) => i % 2 === 0)
-        .map((i) => '#' + i)
+test('slice: begin', () => {
+    const arr = [...Array(5).keys()]
+    let newArr = use(arr).slice(2).toArray()
 
-    expect([...newArr]).toStrictEqual(['#0', '#2', '#4', '#6', '#8'])
+    expect(newArr).toStrictEqual([2, 3, 4])
+})
+
+test('slice: begin and end', () => {
+    const arr = [...Array(10).keys()]
+    let newArr = use(arr).slice(2, 8).toArray()
+
+    expect(newArr).toStrictEqual([2, 3, 4, 5, 6, 7])
+})
+
+test('slice: negative begin', () => {
+    const arr = [...Array(5).keys()]
+    let newArr = use(arr).slice(-2).toArray()
+
+    expect(newArr).toStrictEqual([3, 4])
+})
+
+test('slice: begin and negativ end', () => {
+    const arr = [...Array(10).keys()]
+    let newArr = use(arr).slice(2, -2).toArray()
+
+    expect(newArr).toStrictEqual([2, 3, 4, 5, 6, 7])
 })
 
 test('mutliple: filter, map', () => {
