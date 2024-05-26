@@ -1,13 +1,18 @@
 export class Stream<A> {
-    value: Iterable<A>
-    iteratorCreators: Array<(it: Iterator<any>) => Iterator<any>> = []
+    #value: Iterable<A>
+    #iteratorCreators: Array<(it: Iterator<any>) => Iterator<any>> = []
 
     constructor(value: Iterable<A>) {
-        this.value = value
+        this.#value = value
     }
 
+    /*
+     * evaluating methods
+     */
+
     [Symbol.iterator](): Iterator<A> {
-        const lastIterator = this.iteratorCreators.reduce((parent, creator) => creator(parent), new BaseIterator(this) as Iterator<any>)
+        const valueIterator = this.#value[Symbol.iterator]()
+        const lastIterator = this.#iteratorCreators.reduce((parent, creator) => creator(parent), new BaseIterator(valueIterator) as Iterator<any>)
         return lastIterator
     }
 
@@ -17,13 +22,21 @@ export class Stream<A> {
         }
     }
 
+    toArray(): A[] {
+        return [...this]
+    }
+
+    /*
+     * non-evaluating methods
+     */
+
     chunk(size: number): Stream<A[]> {
         if (size <= 0) {
             throw new Error('size must be positive')
         }
 
         const creator = (parent) => new ChunkIterator(parent, size)
-        this.iteratorCreators.push(creator)
+        this.#iteratorCreators.push(creator)
         return this as any
     }
 
@@ -33,32 +46,28 @@ export class Stream<A> {
 
     concat(...arrays: Array<Iterable<A>>) {
         const creator = (parent) => new ConcatIterator(parent, arrays)
-        this.iteratorCreators.push(creator)
+        this.#iteratorCreators.push(creator)
         return this
     }
 
     filter(filterFn: (item: A) => boolean): Stream<A> {
         const creator = (parent) => new FilterIterator(parent, filterFn)
-        this.iteratorCreators.push(creator)
+        this.#iteratorCreators.push(creator)
         return this
     }
 
     map<B>(mapFn: (item: A) => B): Stream<B> {
         const creator = (parent) => new MapIterator(parent, mapFn)
-        this.iteratorCreators.push(creator)
+        this.#iteratorCreators.push(creator)
         return this as any
-    }
-
-    toArray(): A[] {
-        return [...this]
     }
 }
 
 class BaseIterator<T> implements Iterator<T> {
     #iterator: Iterator<T>
 
-    constructor(stream: Stream<T>) {
-        this.#iterator = stream.value[Symbol.iterator]()
+    constructor(iterator: Iterator<T>) {
+        this.#iterator = iterator
     }
 
     next(): IteratorResult<T, T | undefined> {
