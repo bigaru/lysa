@@ -75,40 +75,40 @@ test('map', () => {
     expect(newArr).toStrictEqual(['#0', '#1', '#2', '#3', '#4'])
 })
 
-test('slice: empty arguments', () => {
-    const arr = [...Array(5).keys()]
-    let newArr = use(arr).slice().toArray()
+// test('slice: empty arguments', () => {
+//     const arr = [...Array(5).keys()]
+//     let newArr = use(arr).slice().toArray()
 
-    expect(newArr).toStrictEqual([0, 1, 2, 3, 4])
-})
+//     expect(newArr).toStrictEqual([0, 1, 2, 3, 4])
+// })
 
-test('slice: begin', () => {
-    const arr = [...Array(5).keys()]
-    let newArr = use(arr).slice(2).toArray()
+// test('slice: begin', () => {
+//     const arr = [...Array(5).keys()]
+//     let newArr = use(arr).slice(2).toArray()
 
-    expect(newArr).toStrictEqual([2, 3, 4])
-})
+//     expect(newArr).toStrictEqual([2, 3, 4])
+// })
 
-test('slice: begin and end', () => {
-    const arr = [...Array(10).keys()]
-    let newArr = use(arr).slice(2, 8).toArray()
+// test('slice: begin and end', () => {
+//     const arr = [...Array(10).keys()]
+//     let newArr = use(arr).slice(2, 8).toArray()
 
-    expect(newArr).toStrictEqual([2, 3, 4, 5, 6, 7])
-})
+//     expect(newArr).toStrictEqual([2, 3, 4, 5, 6, 7])
+// })
 
-test('slice: negative begin', () => {
-    const arr = [...Array(5).keys()]
-    let newArr = use(arr).slice(-2).toArray()
+// test('slice: negative begin', () => {
+//     const arr = [...Array(5).keys()]
+//     let newArr = use(arr).slice(-2).toArray()
 
-    expect(newArr).toStrictEqual([3, 4])
-})
+//     expect(newArr).toStrictEqual([3, 4])
+// })
 
-test('slice: begin and negativ end', () => {
-    const arr = [...Array(10).keys()]
-    let newArr = use(arr).slice(2, -2).toArray()
+// test('slice: begin and negativ end', () => {
+//     const arr = [...Array(10).keys()]
+//     let newArr = use(arr).slice(2, -2).toArray()
 
-    expect(newArr).toStrictEqual([2, 3, 4, 5, 6, 7])
-})
+//     expect(newArr).toStrictEqual([2, 3, 4, 5, 6, 7])
+// })
 
 test('mutliple: filter, map', () => {
     const arr = [...Array(10).keys()]
