@@ -3,9 +3,16 @@ import { lazyInit } from './index.js'
 
 let foo = 'foo'
 
-lazyInit('lateFoo', () => foo)
 declare const lateFoo: string
+lazyInit('lateFoo', () => {
+    console.log('computed')
+    return foo
+})
+
 foo = 'bar'
+console.log(lateFoo)
+console.log(lateFoo)
+console.log(lateFoo)
 
 test('lazyInit global', () => {
     expect(lateFoo).toStrictEqual('bar')
