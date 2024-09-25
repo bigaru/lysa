@@ -1,216 +1,48 @@
-export class Stream<A> {
-    #value: Iterable<A>
-    #iteratorCreators: Array<(it: Iterator<any>) => Iterator<any>> = []
+import { Observable, OperatorFunction, filter, map } from 'rxjs'
 
-    constructor(value: Iterable<A>) {
-        this.#value = value
-    }
+export { filter, map }
 
-    /*
-     * evaluating methods
-     */
+type OF<A = any, B = any> = OperatorFunction<A, B>
 
-    [Symbol.iterator](): Iterator<A> {
-        const valueIterator = this.#value[Symbol.iterator]()
-        const lastIterator = this.#iteratorCreators.reduce((parent, creator) => creator(parent), new BaseIterator(valueIterator) as Iterator<any>)
-        return lastIterator
-    }
+type Creator<T> = (stream: ArrayStream<T>) => any
 
-    forEach = (callback: (item: A) => void): void => {
-        for (const item of this) {
-            callback(item)
+export function ArrayCreator<T>(stream: ArrayStream<T>) {
+    const len = stream.value.length
+    const arr = new Array()
+
+    new Observable((s) => {
+        for (let i = 0; i < len; i++) {
+            s.next(stream.value[i])
         }
-    }
+        s.complete()
+    })
+        .pipe(...(stream.ops as []))
+        .subscribe((item) => arr.push(item))
 
-    toArray(): A[] {
-        return [...this]
-    }
-
-    /*
-     * non-evaluating methods
-     */
-
-    chunk(size: number): Stream<A[]> {
-        if (size <= 0) {
-            throw new Error('size must be positive')
-        }
-
-        const creator = (parent) => new ChunkIterator(parent, size)
-        this.#iteratorCreators.push(creator)
-        return this as any
-    }
-
-    compact(): Stream<A> {
-        return this.filter(Boolean)
-    }
-
-    concat(...arrays: Array<Iterable<A>>) {
-        const creator = (parent) => new ConcatIterator(parent, arrays)
-        this.#iteratorCreators.push(creator)
-        return this
-    }
-
-    filter(filterFn: (item: A) => boolean): Stream<A> {
-        const creator = (parent) => new FilterIterator(parent, filterFn)
-        this.#iteratorCreators.push(creator)
-        return this
-    }
-
-    map<B>(mapFn: (item: A) => B): Stream<B> {
-        const creator = (parent) => new MapIterator(parent, mapFn)
-        this.#iteratorCreators.push(creator)
-        return this as any
-    }
-
-    // slice(begin: number = 0, end?: number): Stream<A> {
-    //     const creator = (parent) => new SliceIterator(parent, begin, end)
-    //     this.#iteratorCreators.push(creator)
-    //     return this
-    // }
+    return arr
 }
 
-class BaseIterator<T> implements Iterator<T> {
-    #iterator: Iterator<T>
+export class ArrayStream<ELEM> {
+    readonly value: ReadonlyArray<ELEM>
+    readonly ops: OF[]
 
-    constructor(iterator: Iterator<T>) {
-        this.#iterator = iterator
+    constructor(value: ReadonlyArray<ELEM>, ops: OF[]) {
+        this.value = value
+        this.ops = ops
     }
 
-    next(): IteratorResult<T, T | undefined> {
-        return this.#iterator.next()
-    }
-}
-
-class ChunkIterator<A> implements Iterator<A[]> {
-    #parent: Iterator<A>
-    #size: number
-
-    constructor(parent: Iterator<A>, size: number) {
-        this.#parent = parent
-        this.#size = size
+    pipe(): ArrayStream<any>
+    pipe<A>(...newOps: [OF<ELEM, A>]): ArrayStream<any>
+    pipe<A, B>(...newOps: [OF<ELEM, A>, OF<A, B>]): ArrayStream<any>
+    pipe<A, B, C>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>]): ArrayStream<any>
+    pipe<A, B, C, D>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>]): ArrayStream<any>
+    pipe<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>]): ArrayStream<any>
+    pipe<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, ...OF[]]): ArrayStream<any>
+    pipe(...newOps: OF[]) {
+        return new ArrayStream(this.value, this.ops.concat(newOps))
     }
 
-    next(): IteratorResult<A[]> {
-        const chunk: A[] = []
-        let current = this.#parent.next()
-
-        while (!current.done) {
-            chunk.push(current.value)
-
-            if (chunk.length === this.#size) {
-                return { done: false, value: chunk }
-            }
-
-            current = this.#parent.next()
-        }
-
-        return { done: chunk.length === 0, value: chunk }
-    }
-}
-
-class ConcatIterator<A> implements Iterator<A> {
-    #parent: Iterator<A>
-    #iterator: Iterator<A>
-
-    #iterableArray: Array<Iterable<A>>
-    #index = 0
-
-    constructor(parent: Iterator<A>, arrays: Array<Iterable<A>>) {
-        this.#parent = parent
-        this.#iterableArray = arrays
-
-        if (arrays.length > 0) {
-            this.#iterator = arrays[this.#index][Symbol.iterator]()
-        }
-    }
-
-    next(): IteratorResult<A> {
-        const parentItem = this.#parent.next()
-
-        if (!parentItem.done) {
-            return parentItem
-        }
-
-        let newItem = this.#iterator?.next() ?? { done: true, value: undefined }
-
-        if (newItem.done && ++this.#index < this.#iterableArray.length) {
-            this.#iterator = this.#iterableArray[this.#index][Symbol.iterator]()
-            newItem = this.#iterator.next()
-        }
-
-        if (!newItem.done) {
-            return newItem
-        }
-
-        return { done: true, value: undefined }
-    }
-}
-
-// class SliceIterator<T> implements Iterator<T> {
-//     #parent: Iterator<T>
-//     #index = -1
-
-//     #begin: number
-//     #end: number
-
-//     constructor(parent: Iterator<T>, begin: number = 0, end: number = 0) {
-//         this.#parent = parent
-//         this.#begin = begin
-//         this.#end = end
-//     }
-
-//     next(): IteratorResult<T> {
-//         let current = this.#parent.next()
-//         this.#index++
-
-//         while (!current.done) {
-//             if (this.#begin <= this.#index && (!this.#end || this.#index < this.#end)) {
-//                 return current
-//             }
-
-//             current = this.#parent.next()
-//             this.#index++
-//         }
-
-//         return current
-//     }
-// }
-
-class FilterIterator<T> implements Iterator<T> {
-    #parent: Iterator<T>
-    #filterFn: (item: T) => boolean
-
-    constructor(parent: Iterator<T>, filterFn: (item: T) => boolean) {
-        this.#parent = parent
-        this.#filterFn = filterFn
-    }
-
-    next(): IteratorResult<T> {
-        let current = this.#parent.next()
-
-        while (!current.done) {
-            if (this.#filterFn(current.value)) {
-                return current
-            }
-
-            current = this.#parent.next()
-        }
-
-        return current
-    }
-}
-
-class MapIterator<A, B> implements Iterator<B> {
-    #parent: Iterator<A>
-    #mapFn: (item: A) => B
-
-    constructor(parent: Iterator<A>, mapFn: (item: A) => B) {
-        this.#parent = parent
-        this.#mapFn = mapFn
-    }
-
-    next(): IteratorResult<B> {
-        const { done, value } = this.#parent.next()
-        return { done, value: this.#mapFn(value) }
+    as(creator: Creator<ELEM>) {
+        return creator(this)
     }
 }

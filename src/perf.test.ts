@@ -1,36 +1,38 @@
 import { run, bench, group, baseline } from 'mitata'
-import { use } from '.'
+import { ArrayStream, filter, map, ArrayCreator } from './stream'
 //@ts-ignore
 import _ from 'lodash'
 
+const LEN = 100_000
+
 group('group', () => {
     bench('Lysa', () => {
-        const arr = [...Array(200000).keys()]
-        let res = use(arr)
-            .filter((i) => i % 3 === 0)
-            .filter((i) => i % 2 === 0)
-            .map((i) => '#' + i)
-            .toArray()
-    })
-    bench('Lodash', () => {
-        const arr = [...Array(200000).keys()]
-        let res = _.map(
-            _.filter(
-                _.filter(arr, (i) => i % 3 === 0),
-                (i) => i % 2 === 0
-            ),
-            (i) => '#' + i
-        )
+        const arr = [...Array(LEN).keys()]
+        let res = new ArrayStream(arr, [])
+            .pipe(
+                map((i) => '#'.repeat(i)),
+                map((i) => '-' + i + '-'),
+                filter((i) => i.length % 7 === 0),
+                map((i) => '-' + i + '444'),
+                map((i) => i.length),
+                filter((i) => i % 2 === 0)
+            )
+            .as(ArrayCreator)
+        //console.log('>', res.length)
     })
     bench('Lodash Chain', () => {
-        const arr = [...Array(200000).keys()]
+        const arr = [...Array(LEN).keys()]
 
         let res = _(arr)
             .chain()
-            .filter((i) => i % 3 === 0)
+            .map((i) => '#'.repeat(i))
+            .map((i) => '-' + i + '-')
+            .filter((i) => i.length % 7 === 0)
+            .map((i) => '-' + i + '444')
+            .map((i) => i.length)
             .filter((i) => i % 2 === 0)
-            .map((i) => '#' + i)
             .value()
+        //console.log('>', res.length)
     })
 })
 
