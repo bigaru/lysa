@@ -1,4 +1,4 @@
-import { concatWith, filter, of } from 'rxjs'
+import { concatWith, filter, Observable, of, type OperatorFunction } from 'rxjs'
 import { ArrayStream, asArray, forEach } from './stream.js'
 export { lazyInit } from './lazyInit.js'
 
@@ -27,10 +27,22 @@ export function compact<T>() {
     return filter<T>((i) => !!i)
 }
 
-export function concat<T>(...inputs: T[][]) {
-    const obs = inputs.map((i) => of(...i))
+function concat<T>(...inputs: ArrayStream<T>[]): OperatorFunction<any, T>
+function concat<T>(...inputs: T[][]): OperatorFunction<any, T>
+function concat<T>(...inputs: any[]) {
+    let obs: Observable<any>[] = []
+
+    if (inputs[0] instanceof ArrayStream) {
+        const arr = inputs as ArrayStream<T>[]
+        obs = arr.map((i) => of(...i.value).pipe(...(i.ops as [])))
+    } else {
+        obs = inputs.map((i) => of(...i))
+    }
+
     return concatWith(...obs)
 }
+
+export { concat }
 
 /*
  * Completion Operators

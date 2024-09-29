@@ -88,10 +88,19 @@ test('array should compact', () => {
     expect(result).toStrictEqual([1, 2, 3, 4])
 })
 
-test('array should concat', () => {
+test('array should concat raw values', () => {
     let result = use([1, 2])
         .perform(concat([3, 4], [5, 6]))
         .complete(asArray())
 
     expect(result).toStrictEqual([1, 2, 3, 4, 5, 6])
+})
+
+test('array should concat stream values', () => {
+    let second = use([1, 2]).perform(map((i) => i * 2))
+    let third = use([2, 3]).perform(map((i) => i * 3))
+
+    let result = use([1, 2]).perform(concat(second, third)).complete(asArray())
+
+    expect(result).toStrictEqual([1, 2, 2, 4, 6, 9])
 })
