@@ -28,18 +28,35 @@ export class ArrayStream<ELEM> {
     }
 }
 
-export function asArray<T>(stream: ArrayStream<T>) {
-    const len = stream.value.length
-    const arr: Array<T> = new Array()
+export function asArray<T>() {
+    return (stream: ArrayStream<T>) => {
+        const len = stream.value.length
+        const arr: Array<T> = new Array()
 
-    new Observable((s) => {
-        for (let i = 0; i < len; i++) {
-            s.next(stream.value[i])
-        }
-        s.complete()
-    })
-        .pipe(...(stream.ops as []))
-        .subscribe((item: any) => arr.push(item))
+        new Observable((s) => {
+            for (let i = 0; i < len; i++) {
+                s.next(stream.value[i])
+            }
+            s.complete()
+        })
+            .pipe(...(stream.ops as []))
+            .subscribe((item: any) => arr.push(item))
 
-    return arr
+        return arr
+    }
+}
+
+export function forEach<T>(fn: (item: T) => any) {
+    return (stream: ArrayStream<T>) => {
+        const len = stream.value.length
+
+        new Observable((s) => {
+            for (let i = 0; i < len; i++) {
+                s.next(stream.value[i])
+            }
+            s.complete()
+        })
+            .pipe(...(stream.ops as []))
+            .subscribe((item: any) => fn(item))
+    }
 }
