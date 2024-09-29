@@ -1,8 +1,11 @@
 /**
- * Warning: one has to set manually `declare const variableName: T`
+ * For typing use `declare const variableName: T`
  */
 export function lazyInit<T>(variableName: string, expensiveFunction: () => T, scope: any = globalThis) {
-    const wrapper = {
+    const wrapper: {
+        isSet: boolean
+        value?: T
+    } = {
         isSet: false,
         value: undefined,
     }

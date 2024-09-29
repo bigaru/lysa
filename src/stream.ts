@@ -1,4 +1,4 @@
-import { Observable, OperatorFunction } from 'rxjs'
+import { Observable, type OperatorFunction } from 'rxjs'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
 type Creator<A, B> = (stream: ArrayStream<A>) => B
