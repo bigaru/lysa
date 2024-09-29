@@ -1,5 +1,5 @@
-import { run, bench, group, baseline } from 'mitata'
-import { ArrayStream, filter, map, ArrayCreator } from './stream'
+import { run, bench, group } from 'mitata'
+import { use, filter, map, asArray } from './index'
 //@ts-ignore
 import _ from 'lodash'
 
@@ -8,8 +8,8 @@ const LEN = 100_000
 group('group', () => {
     bench('Lysa', () => {
         const arr = [...Array(LEN).keys()]
-        let res = new ArrayStream(arr, [])
-            .pipe(
+        let res = use(arr)
+            .perform(
                 map((i) => '#'.repeat(i)),
                 map((i) => '-' + i + '-'),
                 filter((i) => i.length % 7 === 0),
@@ -17,7 +17,7 @@ group('group', () => {
                 map((i) => i.length),
                 filter((i) => i % 2 === 0)
             )
-            .as(ArrayCreator)
+            .complete(asArray)
         //console.log('>', res.length)
     })
     bench('Lodash Chain', () => {

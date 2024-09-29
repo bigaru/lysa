@@ -1,14 +1,36 @@
-import { Observable, OperatorFunction, filter, map } from 'rxjs'
-
-export { filter, map }
+import { Observable, OperatorFunction } from 'rxjs'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
+type Creator<A, B> = (stream: ArrayStream<A>) => B
 
-type Creator<T> = (stream: ArrayStream<T>) => any
+export class ArrayStream<ELEM> {
+    readonly value: ReadonlyArray<ELEM>
+    readonly ops: ReadonlyArray<OF>
 
-export function ArrayCreator<T>(stream: ArrayStream<T>) {
+    constructor(value: ReadonlyArray<ELEM>, ops: ReadonlyArray<OF> = []) {
+        this.value = value
+        this.ops = ops
+    }
+
+    perform(): ArrayStream<any>
+    perform<A>(...newOps: [OF<ELEM, A>]): ArrayStream<A>
+    perform<A, B>(...newOps: [OF<ELEM, A>, OF<A, B>]): ArrayStream<B>
+    perform<A, B, C>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>]): ArrayStream<C>
+    perform<A, B, C, D>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>]): ArrayStream<D>
+    perform<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>]): ArrayStream<E>
+    perform<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, ...OF[]]): ArrayStream<any>
+    perform(...newOps: OF[]) {
+        return new ArrayStream(this.value, this.ops.concat(newOps))
+    }
+
+    complete<RESULT>(creator: Creator<ELEM, RESULT>) {
+        return creator(this)
+    }
+}
+
+export function asArray<T>(stream: ArrayStream<T>) {
     const len = stream.value.length
-    const arr = new Array()
+    const arr: Array<T> = new Array()
 
     new Observable((s) => {
         for (let i = 0; i < len; i++) {
@@ -17,32 +39,7 @@ export function ArrayCreator<T>(stream: ArrayStream<T>) {
         s.complete()
     })
         .pipe(...(stream.ops as []))
-        .subscribe((item) => arr.push(item))
+        .subscribe((item: any) => arr.push(item))
 
     return arr
-}
-
-export class ArrayStream<ELEM> {
-    readonly value: ReadonlyArray<ELEM>
-    readonly ops: OF[]
-
-    constructor(value: ReadonlyArray<ELEM>, ops: OF[]) {
-        this.value = value
-        this.ops = ops
-    }
-
-    pipe(): ArrayStream<any>
-    pipe<A>(...newOps: [OF<ELEM, A>]): ArrayStream<any>
-    pipe<A, B>(...newOps: [OF<ELEM, A>, OF<A, B>]): ArrayStream<any>
-    pipe<A, B, C>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>]): ArrayStream<any>
-    pipe<A, B, C, D>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>]): ArrayStream<any>
-    pipe<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>]): ArrayStream<any>
-    pipe<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, ...OF[]]): ArrayStream<any>
-    pipe(...newOps: OF[]) {
-        return new ArrayStream(this.value, this.ops.concat(newOps))
-    }
-
-    as(creator: Creator<ELEM>) {
-        return creator(this)
-    }
 }
