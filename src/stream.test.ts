@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { use, filter, map, asArray, forEach, distinct, take, takeRight, takeWhile, drop, dropRight, dropWhile } from './index.js'
+import { use, filter, map, asArray, forEach, distinct, take, takeRight, takeWhile, drop, dropRight, dropWhile, chunk, compact, concat } from './index.js'
 
 test('array should filter', () => {
     let result = use([1, 2, 3, 4])
@@ -74,4 +74,24 @@ test('array should dropWhile', () => {
         .complete(asArray())
 
     expect(result).toStrictEqual([6, 7, 8, 9, 10])
+})
+
+test('array should chunk', () => {
+    let result = use([1, 2, 3, 4, 5, 6, 7, 8, 9]).perform(chunk(2)).complete(asArray())
+
+    expect(result).toStrictEqual([[1, 2], [3, 4], [5, 6], [7, 8], [9]])
+})
+
+test('array should compact', () => {
+    let result = use([1, 0, 2, false, 3, '', 4]).perform(compact()).complete(asArray())
+
+    expect(result).toStrictEqual([1, 2, 3, 4])
+})
+
+test('array should concat', () => {
+    let result = use([1, 2])
+        .perform(concat([3, 4], [5, 6]))
+        .complete(asArray())
+
+    expect(result).toStrictEqual([1, 2, 3, 4, 5, 6])
 })

@@ -1,4 +1,4 @@
-import { Observable, type OperatorFunction } from 'rxjs'
+import { of, type OperatorFunction } from 'rxjs'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
 type Creator<A, B> = (stream: ArrayStream<A>) => B
@@ -30,15 +30,9 @@ export class ArrayStream<ELEM> {
 
 export function asArray<T>() {
     return (stream: ArrayStream<T>) => {
-        const len = stream.value.length
         const arr: Array<T> = new Array()
 
-        new Observable((s) => {
-            for (let i = 0; i < len; i++) {
-                s.next(stream.value[i])
-            }
-            s.complete()
-        })
+        of(...stream.value)
             .pipe(...(stream.ops as []))
             .subscribe((item: any) => arr.push(item))
 
@@ -48,14 +42,7 @@ export function asArray<T>() {
 
 export function forEach<T>(fn: (item: T) => any) {
     return (stream: ArrayStream<T>) => {
-        const len = stream.value.length
-
-        new Observable((s) => {
-            for (let i = 0; i < len; i++) {
-                s.next(stream.value[i])
-            }
-            s.complete()
-        })
+        of(...stream.value)
             .pipe(...(stream.ops as []))
             .subscribe((item: any) => fn(item))
     }
