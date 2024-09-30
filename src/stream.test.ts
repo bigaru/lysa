@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { use, filter, map, asArray, forEach, distinct, take, takeRight, takeWhile, drop, dropRight, dropWhile, chunk, compact, concat } from './index.js'
+import { use, filter, map, asArray, forEach, distinct, take, takeRight, takeWhile, drop, dropRight, dropWhile, chunk, compact, concat, range } from './index.js'
 
 test('stream accepts array', () => {
     let result = use(['Lorem', 'ipsum', 'dolor', 'sit', 'amet']).complete(asArray())
@@ -24,6 +24,26 @@ test('stream throw error in case of null/undefined', () => {
     expect(() => {
         use(null as any).complete(asArray())
     }).toThrow(Error)
+})
+
+test('range with stop', () => {
+    let result = range(5).complete(asArray())
+    expect(result).toStrictEqual([0, 1, 2, 3, 4])
+})
+
+test('range with start, stop', () => {
+    let result = range(5, 11).complete(asArray())
+    expect(result).toStrictEqual([5, 6, 7, 8, 9, 10])
+})
+
+test('range with start, stop, step', () => {
+    let result = range(1, 9, 3).complete(asArray())
+    expect(result).toStrictEqual([1, 4, 7])
+})
+
+test('range with start, stop, invalid step', () => {
+    let result = range(9, 1, 3).complete(asArray())
+    expect(result).toStrictEqual([])
 })
 
 test('stream should filter', () => {

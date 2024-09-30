@@ -1,4 +1,4 @@
-import { concatWith, filter, Observable, of, type OperatorFunction } from 'rxjs'
+import { concatWith, filter, generate, Observable, of, type OperatorFunction } from 'rxjs'
 import { Stream, asArray, forEach } from './stream.js'
 export { lazyInit } from './lazyInit.js'
 
@@ -21,7 +21,23 @@ function use<T>(value: any): Stream<any> {
     throw new Error(`type is not supported`)
 }
 
-export { use }
+function range(stop: number): Stream<number>
+function range(start: number, stop: number, step?: number): Stream<number>
+function range(startOrStop: number, stop?: number, step?: number): Stream<number> {
+    const initialState = stop ? startOrStop : 0
+    const updateStop = stop ? stop : startOrStop
+    const updatedStep = step ?? 1
+
+    return new Stream<number>(() =>
+        generate({
+            initialState,
+            condition: (i) => i < updateStop,
+            iterate: (i) => i + updatedStep,
+        })
+    )
+}
+
+export { use, range }
 
 /*
  * Operators
