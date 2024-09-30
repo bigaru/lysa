@@ -29,15 +29,17 @@ export function compact<T>() {
 
 function concat<T>(...inputs: ArrayStream<T>[]): OperatorFunction<any, T>
 function concat<T>(...inputs: T[][]): OperatorFunction<any, T>
-function concat<T>(...inputs: any[]) {
-    let obs: Observable<any>[] = []
+function concat(...inputs: any[]) {
+    const obs: Observable<any>[] = []
 
-    if (inputs[0] instanceof ArrayStream) {
-        const arr = inputs as ArrayStream<T>[]
-        obs = arr.map((i) => of(...i.value).pipe(...(i.ops as [])))
-    } else {
-        obs = inputs.map((i) => of(...i))
-    }
+    inputs.forEach((i) => {
+        if (i instanceof ArrayStream) {
+            const ob = of(...i.value).pipe(...(i.ops as []))
+            obs.push(ob)
+        } else {
+            obs.push(of(...i))
+        }
+    })
 
     return concatWith(...obs)
 }
