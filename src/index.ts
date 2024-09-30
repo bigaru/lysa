@@ -2,9 +2,26 @@ import { concatWith, filter, Observable, of, type OperatorFunction } from 'rxjs'
 import { Stream, asArray, forEach } from './stream.js'
 export { lazyInit } from './lazyInit.js'
 
-export function use<T>(value: ReadonlyArray<T>) {
-    return new Stream(() => of(...value))
+function use<T>(value: ReadonlyArray<T>): Stream<T>
+function use(value: string): Stream<string>
+function use<T>(value: Record<string, T>): Stream<[string, T]>
+function use<T>(value: any): Stream<any> {
+    if (Array.isArray(value)) {
+        return new Stream<T>(() => of(...value))
+    }
+
+    if (typeof value === 'string') {
+        return new Stream<String>(() => of(...value.split('')))
+    }
+
+    if (!!value && typeof value === 'object') {
+        return new Stream<[string, T]>(() => of(...Object.entries<T>(value)))
+    }
+
+    throw new Error(`type is not supported`)
 }
+
+export { use }
 
 /*
  * Operators
