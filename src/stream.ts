@@ -29,23 +29,3 @@ export class Stream<ELEM> {
         return creator(this)
     }
 }
-
-export function asArray<T>() {
-    return (stream: Stream<T>) => {
-        const arr: Array<T> = new Array()
-        stream
-            .createObservable()
-            .pipe(...(stream.ops as []))
-            .subscribe((item) => arr.push(item))
-        return arr
-    }
-}
-
-export function forEach<T>(fn: (item: T) => any) {
-    return (stream: Stream<T>) => {
-        stream
-            .createObservable()
-            .pipe(...(stream.ops as []))
-            .subscribe((item: any) => fn(item))
-    }
-}
