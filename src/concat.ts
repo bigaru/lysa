@@ -1,4 +1,4 @@
-import { concatWith, Observable, of, type OperatorFunction } from 'rxjs'
+import { concatWith, type Observable, of, type OperatorFunction } from 'rxjs'
 import { Stream } from './stream.js'
 
 function concat<T>(...inputs: Stream<T>[]): OperatorFunction<any, T>

@@ -32,7 +32,7 @@ export {
 export { compact, concat }
 
 /*
- * Completion Operators
+ * Terminal Operators
  */
 
 export { asArray, forEach }

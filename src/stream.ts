@@ -1,4 +1,4 @@
-import { Observable, type OperatorFunction } from 'rxjs'
+import { type Observable, type OperatorFunction } from 'rxjs'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
 type CompletionOperator<A, B> = (stream: Stream<A>) => B

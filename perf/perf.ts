@@ -1,6 +1,6 @@
+//@ts-nocheck
 import { run, bench, group } from 'mitata'
-import { use, filter, map, asArray } from './index'
-//@ts-ignore
+import { use, filter, map, asArray } from '../src/index.js'
 import _ from 'lodash'
 
 const LEN = 100_000
