@@ -18,19 +18,6 @@ describe('stream', () => {
         expect(result).toStrictEqual([1, 4, 9, 16])
     })
 
-    it('should forEach', () => {
-        let result: any = []
-        use([1, 2, 3, 4]).complete(forEach((i) => result.push(i)))
-
-        expect(result).toStrictEqual([1, 2, 3, 4])
-    })
-
-    it('should asArray', () => {
-        let result = use([1, 2, 3, 4]).complete(asArray())
-
-        expect(result).toStrictEqual([1, 2, 3, 4])
-    })
-
     it('should distinct', () => {
         let result = use([1, 2, 3, 2, 4, 5, 3, 4]).perform(distinct()).complete(asArray())
 

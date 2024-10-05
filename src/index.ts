@@ -1,6 +1,7 @@
 import { asArray } from './asArray.js'
 import { compact } from './compact.js'
 import { concat } from './concat.js'
+import { every } from './every.js'
 import { forEach } from './forEach.js'
 import { range } from './range.js'
 import { use } from './use.js'
@@ -35,4 +36,4 @@ export { compact, concat }
  * Terminal Operators
  */
 
-export { asArray, forEach }
+export { asArray, every, forEach }
