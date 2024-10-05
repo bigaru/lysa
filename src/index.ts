@@ -3,6 +3,7 @@ import { compact } from './compact.js'
 import { concat } from './concat.js'
 import { count } from './count.js'
 import { every } from './every.js'
+import { find, findIndex } from './find.js'
 import { forEach } from './forEach.js'
 import { range } from './range.js'
 import { use } from './use.js'
@@ -37,4 +38,4 @@ export { compact, concat }
  * Terminal Operators
  */
 
-export { asArray, count, every, forEach }
+export { asArray, count, every, find, findIndex, forEach }
