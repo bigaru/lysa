@@ -5,8 +5,10 @@ import { count } from './count.js'
 import { every } from './every.js'
 import { find, findIndex } from './find.js'
 import { forEach } from './forEach.js'
+import { head } from './head.js'
 import { range } from './range.js'
 import { use } from './use.js'
+import { tail } from './tail.js'
 export { lazyInit } from './lazyInit.js'
 
 /*
@@ -32,10 +34,10 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat }
+export { compact, concat, tail }
 
 /*
  * Terminal Operators
  */
 
-export { asArray, count, every, find, findIndex, forEach }
+export { asArray, count, every, find, findIndex, forEach, head }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, every, count, forEach, use, find, findIndex } from '../src/index.js'
+import { asArray, every, count, forEach, use, find, findIndex, head } from '../src/index.js'
 
 describe('stream', () => {
     it('should forEach', () => {
@@ -41,5 +41,15 @@ describe('stream', () => {
     it('should findIndex', () => {
         let result = use([{ food: 1 }, { food: 2 }, { food: 3 }, { food: 4 }]).complete(findIndex((i) => i.food === 3))
         expect(result).toStrictEqual(2)
+    })
+
+    it('should head', () => {
+        let result = use([31, 42, 53, 23]).complete(head())
+        expect(result).toStrictEqual(31)
+    })
+
+    it('should head empty', () => {
+        let result = use([] as number[]).complete(head())
+        expect(result).toBeUndefined()
     })
 })
