@@ -1,5 +1,5 @@
 import type { Stream } from './stream'
-import rxjs from 'rxjs'
+import { every as RxEvery } from 'rxjs'
 
 export function every<T>(predicate: (value: T, index: number) => boolean) {
     return (stream: Stream<T>) => {
@@ -7,7 +7,7 @@ export function every<T>(predicate: (value: T, index: number) => boolean) {
 
         stream
             .createObservable()
-            .pipe(...(stream.ops as []), rxjs.every<T>(predicate))
+            .pipe(...(stream.ops as []), RxEvery<T>(predicate))
             .subscribe((item) => {
                 element = item
             })
