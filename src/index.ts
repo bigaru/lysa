@@ -4,7 +4,7 @@ import { concat } from './concat.js'
 import { count } from './count.js'
 import { every } from './every.js'
 import { find, findIndex } from './find.js'
-import { flatten } from './flatten.js'
+import { flatMap, flatten } from './flatten.js'
 import { forEach } from './forEach.js'
 import { head } from './head.js'
 import { range } from './range.js'
@@ -35,7 +35,7 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat, flatten, tail }
+export { compact, concat, flatMap, flatten, tail }
 
 /*
  * Terminal Operators
