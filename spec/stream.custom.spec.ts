@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 import { asArray, compact, concat, map, use, tail, flatten } from '../src/index.js'
+import { Stream } from '../src/stream.js'
 
 describe('stream', () => {
     it('should compact', () => {
@@ -39,8 +40,16 @@ describe('stream', () => {
         expect(result).toStrictEqual([1, 2, 3, 4, [5, 6, [7, 8, [9]]]])
     })
 
+    it('should flatten with stream', () => {
+        let result = use([[1, 2], 3, use([4, 5, 6])])
+            .perform(flatten())
+            .complete(asArray())
+
+        expect(result).toStrictEqual([1, 2, 3, 4, 5, 6])
+    })
+
     it('should flatten recursively', () => {
-        let result = use([[1, 2], 3, [4, [5, 6, [7, 8, [9]]]]])
+        let result = use([[1, 2], 3, [4, use([5, 6, [7, 8, use([9])]])]])
             .perform(flatten(true))
             .complete(asArray())
 
