@@ -4,11 +4,12 @@ import { concat } from './concat.js'
 import { count } from './count.js'
 import { every } from './every.js'
 import { find, findIndex } from './find.js'
+import { flatten } from './flatten.js'
 import { forEach } from './forEach.js'
 import { head } from './head.js'
 import { range } from './range.js'
-import { use } from './use.js'
 import { tail } from './tail.js'
+import { use } from './use.js'
 export { lazyInit } from './lazyInit.js'
 
 /*
@@ -34,7 +35,7 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat, tail }
+export { compact, concat, flatten, tail }
 
 /*
  * Terminal Operators
