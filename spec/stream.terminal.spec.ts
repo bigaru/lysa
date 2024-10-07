@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min } from '../src/index.js'
+import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, sum } from '../src/index.js'
+import { concatMap, scan } from 'rxjs'
 
 describe('stream', () => {
     it('should forEach', () => {
@@ -81,5 +82,25 @@ describe('stream', () => {
     it('should min with comperator', () => {
         let result = use([4, 5, 8, 1, 3]).complete(min((a, b) => b - a))
         expect(result).toStrictEqual(8)
+    })
+
+    it('should reduce', () => {
+        let result = use(['hel', 'lo', ' wor', 'ld']).complete(reduce((acc, val) => acc + val))
+        expect(result).toStrictEqual('hello world')
+    })
+
+    it('should reduce with seed', () => {
+        let result = use(['hello', 'world']).complete(reduce((acc, val) => acc + val.length, 100))
+        expect(result).toStrictEqual(110)
+    })
+
+    it('should sum string', () => {
+        let result = use(['hel', 'lo', ' wor', 'ld']).complete(sum())
+        expect(result).toStrictEqual('hello world')
+    })
+
+    it('should sum number', () => {
+        let result = use([1, 2, 3, 4, 5]).complete(sum())
+        expect(result).toStrictEqual(15)
     })
 })

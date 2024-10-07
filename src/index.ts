@@ -11,6 +11,7 @@ import { last } from './last.js'
 import { max } from './max.js'
 import { min } from './min.js'
 import { range } from './range.js'
+import { reduce, sum } from './reduce.js'
 import { tail } from './tail.js'
 import { use } from './use.js'
 export { lazyInit } from './lazyInit.js'
@@ -44,4 +45,4 @@ export { compact, concat, flatMap, flatten, tail }
  * Terminal Operators
  */
 
-export { asArray, count, every, find, findIndex, forEach, head, last, max, min }
+export { asArray, count, every, find, findIndex, forEach, head, last, max, min, reduce, sum }
