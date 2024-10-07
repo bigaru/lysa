@@ -7,6 +7,9 @@ import { find, findIndex } from './find.js'
 import { flatMap, flatten } from './flatten.js'
 import { forEach } from './forEach.js'
 import { head } from './head.js'
+import { last } from './last.js'
+import { max } from './max.js'
+import { min } from './min.js'
 import { range } from './range.js'
 import { tail } from './tail.js'
 import { use } from './use.js'
@@ -41,4 +44,4 @@ export { compact, concat, flatMap, flatten, tail }
  * Terminal Operators
  */
 
-export { asArray, count, every, find, findIndex, forEach, head }
+export { asArray, count, every, find, findIndex, forEach, head, last, max, min }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, every, count, forEach, use, find, findIndex, head } from '../src/index.js'
+import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min } from '../src/index.js'
 
 describe('stream', () => {
     it('should forEach', () => {
@@ -51,5 +51,35 @@ describe('stream', () => {
     it('should head empty', () => {
         let result = use([] as number[]).complete(head())
         expect(result).toBeUndefined()
+    })
+
+    it('should last', () => {
+        let result = use([31, 42, 53, 23]).complete(last())
+        expect(result).toStrictEqual(23)
+    })
+
+    it('should last empty', () => {
+        let result = use([] as number[]).complete(last())
+        expect(result).toBeUndefined()
+    })
+
+    it('should max', () => {
+        let result = use([4, 5, 8, 1, 3]).complete(max())
+        expect(result).toStrictEqual(8)
+    })
+
+    it('should max with comperator', () => {
+        let result = use([4, 5, 8, 1, 3]).complete(max((a, b) => b - a))
+        expect(result).toStrictEqual(1)
+    })
+
+    it('should min', () => {
+        let result = use([4, 5, 8, 1, 3]).complete(min())
+        expect(result).toStrictEqual(1)
+    })
+
+    it('should min with comperator', () => {
+        let result = use([4, 5, 8, 1, 3]).complete(min((a, b) => b - a))
+        expect(result).toStrictEqual(8)
     })
 })
