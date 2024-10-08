@@ -24,6 +24,14 @@ describe('stream', () => {
         expect(result).toStrictEqual([1, 2, 3, 4, 5])
     })
 
+    it('should distinct', () => {
+        let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'banana' }, { food: 'apple' }])
+            .perform(distinct((i) => i.food))
+            .complete(asArray())
+
+        expect(result).toStrictEqual([{ food: 'banana' }, { food: 'apple' }])
+    })
+
     it('should take', () => {
         let result = use([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).perform(take(5)).complete(asArray())
 

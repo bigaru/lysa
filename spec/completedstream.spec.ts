@@ -1,6 +1,5 @@
-import { describe, expect, it, beforeAll } from 'bun:test'
-import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, reduceRight, sum, some, filter, map } from '../src/index.js'
-import { CompletedStream } from '../src/stream.js'
+import { beforeAll, describe, expect, it } from 'bun:test'
+import { asArray, count, every, filter, head, last, map, max, min, sum, use, type CompletedStream } from '../src/index.js'
 import { tap } from 'rxjs'
 
 describe('completedStream', () => {

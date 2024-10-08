@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range } from '../src/index.js'
+import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range, intersection, difference } from '../src/index.js'
 
 describe('stream', () => {
     it('should compact', () => {
@@ -82,5 +82,33 @@ describe('stream', () => {
     it('should reverse', () => {
         let result = range(4).perform(reverse()).complete(asArray())
         expect(result).toStrictEqual([3, 2, 1, 0])
+    })
+
+    it('should intersection', () => {
+        let result = use([1, 2, 3, 4])
+            .perform(intersection([3, 4, 5, 6]))
+            .complete(asArray())
+        expect(result).toStrictEqual([3, 4])
+    })
+
+    it('should intersection with comparator', () => {
+        let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'pear' }, { food: 'cherry' }])
+            .perform(intersection([{ food: 'cake' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }], (a, b) => a.food === b.food))
+            .complete(asArray())
+        expect(result).toStrictEqual([{ food: 'banana' }, { food: 'apple' }])
+    })
+
+    it('should difference', () => {
+        let result = use([1, 2, 3, 4])
+            .perform(difference([3, 4, 5, 6]))
+            .complete(asArray())
+        expect(result).toStrictEqual([1, 2])
+    })
+
+    it('should difference with comparator', () => {
+        let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'pear' }, { food: 'cherry' }])
+            .perform(difference([{ food: 'cake' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }], (a, b) => a.food === b.food))
+            .complete(asArray())
+        expect(result).toStrictEqual([{ food: 'pear' }, { food: 'cherry' }])
     })
 })

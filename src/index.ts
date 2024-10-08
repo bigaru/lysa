@@ -15,7 +15,10 @@ import { range } from './range.js'
 import { reduce, reduceRight, sum } from './reduce.js'
 import { tail } from './tail.js'
 import { use } from './use.js'
+import { intersection } from './intersection.js'
+import { difference } from './difference.js'
 export { lazyInit } from './lazyInit.js'
+export type { Stream, CompletedStream } from './stream.js'
 
 /*
  * Creators
@@ -40,7 +43,7 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat, flatMap, flatten, tail, reverse }
+export { compact, concat, flatMap, flatten, tail, reverse, intersection, difference }
 
 /*
  * Terminal Operators
