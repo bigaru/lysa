@@ -1,16 +1,12 @@
-import type { Stream } from './stream'
-import { count as RxCount } from 'rxjs'
+import { count as RxCount, type Observable } from 'rxjs'
 
 export function count<T>(predicate?: (value: T, index: number) => boolean) {
-    return (stream: Stream<T>) => {
+    return (observable: Observable<T>) => {
         let no: number
 
-        stream
-            .createObservable()
-            .pipe(...(stream.ops as []), RxCount<T>(predicate))
-            .subscribe((item) => {
-                no = item
-            })
+        observable.pipe(RxCount<T>(predicate)).subscribe((item) => {
+            no = item
+        })
         return no!
     }
 }

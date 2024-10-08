@@ -1,16 +1,12 @@
-import type { Stream } from './stream'
-import { takeLast } from 'rxjs'
+import { type Observable, takeLast } from 'rxjs'
 
 export function last<T>() {
-    return (stream: Stream<T>) => {
+    return (observable: Observable<T>) => {
         let element: T | undefined
 
-        stream
-            .createObservable()
-            .pipe(...(stream.ops as []), takeLast(1))
-            .subscribe((item) => {
-                element = item
-            })
+        observable.pipe(takeLast(1)).subscribe((item) => {
+            element = item
+        })
         return element
     }
 }

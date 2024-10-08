@@ -1,16 +1,12 @@
-import type { Stream } from './stream'
-import { take } from 'rxjs'
+import { take, type Observable } from 'rxjs'
 
 export function head<T>() {
-    return (stream: Stream<T>) => {
+    return (observable: Observable<T>) => {
         let element: T | undefined
 
-        stream
-            .createObservable()
-            .pipe(...(stream.ops as []), take(1))
-            .subscribe((item) => {
-                element = item
-            })
+        observable.pipe(take(1)).subscribe((item) => {
+            element = item
+        })
         return element
     }
 }

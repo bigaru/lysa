@@ -1,12 +1,9 @@
-import type { Stream } from './stream'
+import type { Observable } from 'rxjs'
 
 export function asArray<T>() {
-    return (stream: Stream<T>) => {
+    return (observable: Observable<T>) => {
         const arr: Array<T> = new Array()
-        stream
-            .createObservable()
-            .pipe(...(stream.ops as []))
-            .subscribe((item) => arr.push(item))
+        observable.subscribe((item) => arr.push(item))
         return arr
     }
 }

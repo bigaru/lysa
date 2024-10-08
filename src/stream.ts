@@ -1,7 +1,7 @@
-import { type Observable, type OperatorFunction } from 'rxjs'
+import { ReplaySubject, type Observable, type OperatorFunction } from 'rxjs'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
-type CompletionOperator<A, B> = (stream: Stream<A>) => B
+export type TerminalOperator<A, B> = (ob: Observable<A>) => B
 
 type ObservableCreator<T> = () => Observable<T>
 
@@ -25,7 +25,27 @@ export class Stream<ELEM> {
         return new Stream(this.createObservable, this.ops.concat(newOps))
     }
 
-    complete<RESULT>(creator: CompletionOperator<ELEM, RESULT>) {
-        return creator(this)
+    complete<RESULT = ELEM>(): CompletedStream<RESULT>
+    complete<RESULT>(operator: TerminalOperator<ELEM, RESULT>): RESULT
+    complete<RESULT>(operator?: TerminalOperator<ELEM, RESULT>): any {
+        const observable = this.createObservable().pipe(...(this.ops as []))
+
+        if (operator) {
+            return operator(observable)
+        }
+
+        return new CompletedStream(observable)
+    }
+}
+
+export class CompletedStream<T> {
+    readonly subject = new ReplaySubject<T>()
+
+    constructor(observable: Observable<T>) {
+        observable.subscribe(this.subject)
+    }
+
+    get<S>(operator: TerminalOperator<T, S>) {
+        return operator(this.subject)
     }
 }
