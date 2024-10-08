@@ -4,7 +4,7 @@ import { concat } from './concat.js'
 import { count } from './count.js'
 import { every } from './every.js'
 import { reverse } from './reverse.js'
-import { find, findIndex } from './find.js'
+import { find, findIndex, some } from './find.js'
 import { flatMap, flatten } from './flatten.js'
 import { forEach } from './forEach.js'
 import { head } from './head.js'
@@ -46,4 +46,4 @@ export { compact, concat, flatMap, flatten, tail, reverse }
  * Terminal Operators
  */
 
-export { asArray, count, every, find, findIndex, forEach, head, last, max, min, reduce, reduceRight, sum }
+export { asArray, count, every, some, find, findIndex, forEach, head, last, max, min, reduce, reduceRight, sum }

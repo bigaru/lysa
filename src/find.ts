@@ -28,3 +28,17 @@ export function findIndex<T>(predicate: (value: T, index: number) => boolean) {
         return index!
     }
 }
+
+export function some<T>(predicate: (value: T, index: number) => boolean) {
+    return (stream: Stream<T>) => {
+        let found: boolean
+
+        stream
+            .createObservable()
+            .pipe(...(stream.ops as []), RxFind<T>(predicate))
+            .subscribe((item) => {
+                found = !!item
+            })
+        return found!
+    }
+}

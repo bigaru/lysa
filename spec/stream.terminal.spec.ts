@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, reduceRight, sum } from '../src/index.js'
+import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, reduceRight, sum, some } from '../src/index.js'
 
 describe('stream', () => {
     it('should forEach', () => {
@@ -26,6 +26,16 @@ describe('stream', () => {
     it('should count number', () => {
         let result = use(['1', 2, '3', 4, true]).complete(count((i) => typeof i === 'number'))
         expect(result).toStrictEqual(2)
+    })
+
+    it('should some', () => {
+        let result = use(['1', 2, '3', 4, true, 5]).complete(some((i) => typeof i === 'boolean'))
+        expect(result).toStrictEqual(true)
+    })
+
+    it('should some if missing', () => {
+        let result = use(['1', 2, '3', 4, 5]).complete(some((i) => typeof i === 'boolean'))
+        expect(result).toStrictEqual(false)
     })
 
     it('should find', () => {
