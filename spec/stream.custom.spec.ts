@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, compact, concat, map, use, tail, flatten, flatMap } from '../src/index.js'
+import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range } from '../src/index.js'
 
 describe('stream', () => {
     it('should compact', () => {
@@ -77,5 +77,10 @@ describe('stream', () => {
             .complete(asArray())
 
         expect(result).toStrictEqual([1, 1, 2, 4, 3, 9, 4, 16, 5, 25, 6, 36])
+    })
+
+    it('should reverse', () => {
+        let result = range(4).perform(reverse()).complete(asArray())
+        expect(result).toStrictEqual([3, 2, 1, 0])
     })
 })

@@ -3,6 +3,7 @@ import { compact } from './compact.js'
 import { concat } from './concat.js'
 import { count } from './count.js'
 import { every } from './every.js'
+import { reverse } from './reverse.js'
 import { find, findIndex } from './find.js'
 import { flatMap, flatten } from './flatten.js'
 import { forEach } from './forEach.js'
@@ -39,7 +40,7 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat, flatMap, flatten, tail }
+export { compact, concat, flatMap, flatten, tail, reverse }
 
 /*
  * Terminal Operators

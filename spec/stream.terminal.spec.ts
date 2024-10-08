@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'bun:test'
 import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, sum } from '../src/index.js'
-import { concatMap, scan } from 'rxjs'
 
 describe('stream', () => {
     it('should forEach', () => {
