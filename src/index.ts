@@ -15,6 +15,7 @@ import { range } from './range.js'
 import { reduce, reduceRight, sum } from './reduce.js'
 import { tail } from './tail.js'
 import { use } from './use.js'
+import { zip } from './zip.js'
 import { intersection } from './intersection.js'
 import { difference } from './difference.js'
 export { lazyInit } from './lazyInit.js'
@@ -43,7 +44,7 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat, flatMap, flatten, tail, reverse, intersection, difference }
+export { compact, concat, flatMap, flatten, tail, reverse, intersection, difference, zip }
 
 /*
  * Terminal Operators

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range, intersection, difference } from '../src/index.js'
+import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range, intersection, difference, zip } from '../src/index.js'
 
 describe('stream', () => {
     it('should compact', () => {
@@ -23,6 +23,31 @@ describe('stream', () => {
         let result = use([1, 2]).perform(concat(second, third)).complete(asArray())
 
         expect(result).toStrictEqual([1, 2, 2, 4, 6, 9])
+    })
+
+    it('should zip raw values', () => {
+        let result = use([1, 2, 3, 4])
+            .perform(zip(['a', 'b', 'c', 'd'], [5, 6, 7, 8]))
+            .complete(asArray())
+
+        expect(result).toStrictEqual([
+            [1, 'a', 5],
+            [2, 'b', 6],
+            [3, 'c', 7],
+            [4, 'd', 8],
+        ])
+    })
+
+    it('should zip stream values', () => {
+        let second = use([1, 2]).perform(map((i) => i * 2))
+        let third = use([2, 3]).perform(map((i) => '' + i * 3))
+
+        let result = use([1, 2]).perform(zip(second, third)).complete(asArray())
+
+        expect(result).toStrictEqual([
+            [1, 2, '6'],
+            [2, 4, '9'],
+        ])
     })
 
     it('should tail', () => {
