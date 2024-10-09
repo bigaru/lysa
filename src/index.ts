@@ -18,6 +18,7 @@ import { use } from './use.js'
 import { zip } from './zip.js'
 import { intersection } from './intersection.js'
 import { difference } from './difference.js'
+import { sort } from './sort.js'
 export { lazyInit } from './lazyInit.js'
 export type { Stream, CompletedStream } from './stream.js'
 
@@ -44,7 +45,7 @@ export {
     takeWhile,
 } from 'rxjs'
 
-export { compact, concat, flatMap, flatten, tail, reverse, intersection, difference, zip }
+export { compact, concat, flatMap, flatten, tail, reverse, intersection, difference, zip, sort }
 
 /*
  * Terminal Operators

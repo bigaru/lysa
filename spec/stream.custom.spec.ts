@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range, intersection, difference, zip } from '../src/index.js'
+import { asArray, compact, concat, map, use, tail, flatten, flatMap, reverse, range, intersection, difference, zip, sort } from '../src/index.js'
 
 describe('stream', () => {
     it('should compact', () => {
@@ -135,5 +135,18 @@ describe('stream', () => {
             .perform(difference([{ food: 'cake' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }], (a, b) => a.food === b.food))
             .complete(asArray())
         expect(result).toStrictEqual([{ food: 'pear' }, { food: 'cherry' }])
+    })
+
+    it('should sort', () => {
+        let result = use([4, 1, 3, 2, 3, 5]).perform(sort()).complete(asArray())
+        expect(result).toStrictEqual([1, 2, 3, 3, 4, 5])
+    })
+
+    it('should sort with comparator', () => {
+        let result = use(['x', 'y', 'z', 'a', 'b', 'c'])
+            .perform(sort((a, b) => b.charCodeAt(0) - a.charCodeAt(0)))
+            .complete(asArray())
+
+        expect(result).toStrictEqual(['z', 'y', 'x', 'c', 'b', 'a'])
     })
 })
