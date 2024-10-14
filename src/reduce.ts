@@ -27,4 +27,11 @@ function sum(): any {
     return reduce<any>((acc, value) => acc + value)
 }
 
-export { reduce, reduceRight, sum }
+function asObject<T>() {
+    return reduce<[PropertyKey, T], Record<PropertyKey, T>>((acc, [key, val]) => {
+        acc[key] = val
+        return acc
+    }, {})
+}
+
+export { reduce, reduceRight, sum, asObject }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, reduceRight, sum, some } from '../src/index.js'
+import { asArray, every, count, forEach, use, find, findIndex, head, last, max, min, reduce, reduceRight, sum, some, asObject } from '../src/index.js'
 
 describe('stream', () => {
     it('should forEach', () => {
@@ -11,6 +11,15 @@ describe('stream', () => {
     it('should asArray', () => {
         let result = use([1, 2, 3, 4]).complete(asArray())
         expect(result).toStrictEqual([1, 2, 3, 4])
+    })
+
+    it('should asObject', () => {
+        let result = use<[string, string]>([
+            ['foo0', 'bar0'],
+            ['foo1', 'bar1'],
+            ['foo0', 'bad'],
+        ]).complete(asObject())
+        expect(result).toStrictEqual({ foo0: 'bad', foo1: 'bar1' })
     })
 
     it('should every', () => {

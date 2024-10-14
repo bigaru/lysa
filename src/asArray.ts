@@ -1,9 +1,11 @@
-import type { Observable } from 'rxjs'
+import { toArray, type Observable } from 'rxjs'
 
 export function asArray<T>() {
     return (observable: Observable<T>) => {
-        const arr: Array<T> = new Array()
-        observable.subscribe((item) => arr.push(item))
-        return arr
+        let arr: Array<T>
+        observable.pipe(toArray()).subscribe((item) => {
+            arr = item
+        })
+        return arr!
     }
 }
