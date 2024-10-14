@@ -54,4 +54,12 @@ describe('completedStream', () => {
         let result = cs.get(sum())
         expect(result).toStrictEqual(120)
     })
+
+    it('should iterate', () => {
+        let result: number[] = []
+        for (let item of cs) {
+            result.push(item)
+        }
+        expect(result).toStrictEqual([16, 4, 64, 36])
+    })
 })

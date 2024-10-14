@@ -1,4 +1,5 @@
 import { ReplaySubject, type Observable, type OperatorFunction } from 'rxjs'
+import { asArray } from '.'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
 export type TerminalOperator<A, B> = (ob: Observable<A>) => B
@@ -47,5 +48,20 @@ export class CompletedStream<T> {
 
     get<S>(operator: TerminalOperator<T, S>) {
         return operator(this.subject)
+    }
+
+    [Symbol.iterator](): Iterator<T> {
+        let index = 0
+        const internalArray = this.get(asArray())
+        const len = internalArray.length
+
+        return {
+            next() {
+                if (index < len) {
+                    return { value: internalArray[index++], done: false }
+                }
+                return { done: true, value: undefined }
+            },
+        }
     }
 }
