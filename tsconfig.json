@@ -7,9 +7,12 @@
         "moduleDetection": "force",
         "allowJs": true,
         "outDir": "./dist",
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
 
         // Bundler mode
-        "moduleResolution": "bundler",
+        "moduleResolution": "Bundler",
         "verbatimModuleSyntax": true,
 
         // Best practices
