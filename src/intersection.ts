@@ -1,9 +1,22 @@
-import { filter } from 'rxjs'
+import { filter, type OperatorFunction } from 'rxjs'
 
-export function intersection<T>(array: ReadonlyArray<T>, equalityFn?: (a: T, b: T) => boolean) {
-    if (equalityFn) {
-        return filter<T>((item) => array.some((arrayItem) => equalityFn(item, arrayItem)))
-    }
+function intersection<T, S extends ReadonlyArray<T>[]>(...args: [...S]): OperatorFunction<T, T>
+function intersection<T, S extends ReadonlyArray<T>[]>(...args: [...S, (a: T, b: T) => boolean]): OperatorFunction<T, T>
+function intersection<T>(...arrays: any[]) {
+    const equalityFn = arrays[arrays.length - 1]
+    const restArrays = arrays.slice(0, -1)
 
-    return filter<T>((item) => array.includes(item))
+    const isLastFn = typeof equalityFn === 'function'
+    const arrayOfArrays = isLastFn ? restArrays : arrays
+
+    return filter<T>((item) =>
+        arrayOfArrays.every((array: T[]) => {
+            if (isLastFn) {
+                return array.some((arrayItem) => equalityFn(item, arrayItem))
+            }
+            return array.includes(item)
+        })
+    )
 }
+
+export { intersection }

@@ -110,17 +110,30 @@ describe('stream', () => {
     })
 
     it('should intersection', () => {
-        let result = use([1, 2, 3, 4])
-            .perform(intersection([3, 4, 5, 6]))
+        let result = use([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            .perform(intersection([2, 4, 6, 8]))
             .complete(asArray())
-        expect(result).toStrictEqual([3, 4])
+        expect(result).toStrictEqual([2, 4, 6, 8])
+    })
+
+    it('should intersection with multiple', () => {
+        let result = use([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            .perform(intersection([2, 4, 6, 8], [1, 2, 3, 4, 5]))
+            .complete(asArray())
+        expect(result).toStrictEqual([2, 4])
     })
 
     it('should intersection with comparator', () => {
         let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'pear' }, { food: 'cherry' }])
-            .perform(intersection([{ food: 'cake' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }], (a, b) => a.food === b.food))
+            .perform(
+                intersection(
+                    [{ food: 'pear' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }],
+                    [{ food: 'avocado' }, { food: 'apple' }, { food: 'pineapple' }],
+                    (a, b) => a.food === b.food
+                )
+            )
             .complete(asArray())
-        expect(result).toStrictEqual([{ food: 'banana' }, { food: 'apple' }])
+        expect(result).toStrictEqual([{ food: 'apple' }])
     })
 
     it('should difference', () => {
