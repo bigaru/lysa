@@ -143,11 +143,24 @@ describe('stream', () => {
         expect(result).toStrictEqual([1, 2])
     })
 
-    it('should difference with comparator', () => {
-        let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'pear' }, { food: 'cherry' }])
-            .perform(difference([{ food: 'cake' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }], (a, b) => a.food === b.food))
+    it('should difference with multiple', () => {
+        let result = use([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            .perform(difference([2, 4, 6, 8], [1, 2, 3, 4, 5]))
             .complete(asArray())
-        expect(result).toStrictEqual([{ food: 'pear' }, { food: 'cherry' }])
+        expect(result).toStrictEqual([7, 9, 10])
+    })
+
+    it('should difference with comparator', () => {
+        let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'pear' }, { food: 'cherry' }, { food: 'coconut' }])
+            .perform(
+                difference(
+                    [{ food: 'cake' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }],
+                    [{ food: 'avocado' }, { food: 'apple' }, { food: 'pineapple' }, { food: 'cherry' }],
+                    (a, b) => a.food === b.food
+                )
+            )
+            .complete(asArray())
+        expect(result).toStrictEqual([{ food: 'pear' }, { food: 'coconut' }])
     })
 
     it('should sort', () => {
