@@ -9,6 +9,7 @@
         "outDir": "./dist",
         "declaration": true,
         "sourceMap": true,
+        "forceConsistentCasingInFileNames": true,
 
         // Bundler mode
         "moduleResolution": "Bundler",

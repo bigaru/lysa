@@ -1,5 +1,5 @@
 import { ReplaySubject, type Observable, type OperatorFunction } from 'rxjs'
-import { asArray } from '.'
+import { asArray } from './asArray.js'
 
 type OF<A = any, B = any> = OperatorFunction<A, B>
 export type TerminalOperator<A, B> = (ob: Observable<A>) => B
@@ -21,7 +21,12 @@ export class Stream<ELEM> {
     perform<A, B, C>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>]): Stream<C>
     perform<A, B, C, D>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>]): Stream<D>
     perform<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>]): Stream<E>
-    perform<A, B, C, D, E>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, ...OF[]]): Stream<any>
+    perform<A, B, C, D, E, F>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, OF<E, F>]): Stream<F>
+    perform<A, B, C, D, E, F, G>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, OF<E, F>, OF<F, G>]): Stream<G>
+    perform<A, B, C, D, E, F, G, H>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, OF<E, F>, OF<F, G>, OF<G, H>]): Stream<H>
+    perform<A, B, C, D, E, F, G, H, I>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, OF<E, F>, OF<F, G>, OF<G, H>, OF<H, I>]): Stream<I>
+    perform<A, B, C, D, E, F, G, H, I, J>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, OF<E, F>, OF<F, G>, OF<G, H>, OF<H, I>, OF<I, J>]): Stream<J>
+    perform<A, B, C, D, E, F, G, H, I, J>(...newOps: [OF<ELEM, A>, OF<A, B>, OF<B, C>, OF<C, D>, OF<D, E>, OF<E, F>, OF<F, G>, OF<G, H>, OF<H, I>, OF<I, J>, ...OF[]]): Stream<any>
     perform(...newOps: OF[]) {
         return new Stream(this.createObservable, this.ops.concat(newOps))
     }

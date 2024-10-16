@@ -1,5 +1,5 @@
 import { type Observable, map, mergeMap, of, type OperatorFunction, type ValueFromArray } from 'rxjs'
-import { Stream } from './stream'
+import { Stream } from './stream.js'
 
 type ElementOrArray<T> = T | Array<ElementOrArray<T>> | Stream<ElementOrArray<T>>
 type Project<T, S> = (value: T, index: number) => S
