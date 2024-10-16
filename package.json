@@ -1,6 +1,6 @@
 {
-    "name": "@lysa/core",
-    "description": "",
+    "name": "lysa",
+    "description": "A practical utility library for TypeScript.",
     "version": "0.0.1",
     "author": "bigaru",
     "type": "module",
@@ -9,11 +9,26 @@
     "license": "Apache-2.0",
     "sideEffects": false,
     "files": [
-        "/dist"
+        "dist",
+        "README.md",
+        "LICENSE.txt"
     ],
     "repository": {
         "type": "git",
         "url": "https://github.com/bigaru/lysa.git"
+    },
+    "bugs": {
+        "url": "https://github.com/bigaru/lysa/issues"
+    },
+    "homepage": "https://github.com/bigaru/lysa#readme",
+    "keywords": [
+        "functional",
+        "utils",
+        "utilities",
+        "toolkit"
+    ],
+    "publishConfig": {
+        "access": "public"
     },
     "scripts": {
         "build": "bunx tsc",

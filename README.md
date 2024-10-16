@@ -1,7 +1,7 @@
 # Lysa
 [![CI](https://github.com/bigaru/lysa/actions/workflows/ci.yml/badge.svg)](https://github.com/bigaru/lysa/actions/workflows/ci.yml)
 
-Lysa is an utility library for TypeScript similar to [lazy.js](https://github.com/dtao/lazy.js). It is built on top of [rxjs](https://github.com/ReactiveX/rxjs).
+Lysa is a practical utility library for TypeScript similar to [lazy.js](https://github.com/dtao/lazy.js). It is built on top of [RxJS](https://github.com/ReactiveX/rxjs).
 
 With emphasis on:
 * lazy evaluation
