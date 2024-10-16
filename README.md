@@ -1,5 +1,6 @@
 # Lysa
-[![CI](https://github.com/bigaru/lysa/actions/workflows/ci.yml/badge.svg)](https://github.com/bigaru/lysa/actions/workflows/ci.yml)
+[![CI](https://github.com/bigaru/lysa/actions/workflows/ci.yml/badge.svg)](https://github.com/bigaru/lysa/actions/workflows/ci.yml) [![NPM Version](https://img.shields.io/npm/v/%40bigaru%2Flysa)](https://www.npmjs.com/package/@bigaru/lysa)
+
 
 Lysa is a practical utility library for TypeScript similar to [lazy.js](https://github.com/dtao/lazy.js). It is built on top of [RxJS](https://github.com/ReactiveX/rxjs).
 
