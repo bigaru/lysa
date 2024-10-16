@@ -1,5 +1,5 @@
 {
-    "name": "lysa",
+    "name": "@bigaru/lysa",
     "description": "A practical utility library for TypeScript.",
     "version": "0.0.1",
     "author": "bigaru",
@@ -15,7 +15,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/bigaru/lysa.git"
+        "url": "git+https://github.com/bigaru/lysa.git"
     },
     "bugs": {
         "url": "https://github.com/bigaru/lysa/issues"
