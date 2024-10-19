@@ -17,7 +17,7 @@ group('group', () => {
                 map((i) => i.length),
                 filter((i) => i % 2 === 0)
             )
-            .complete(asArray)
+            .complete(asArray())
         //console.log('>', res.length)
     })
     bench('Lodash Chain', () => {

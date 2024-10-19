@@ -25,6 +25,15 @@ describe('stream', () => {
         expect(result).toStrictEqual([1, 2, 2, 4, 6, 9])
     })
 
+    it('should concat completed stream values', () => {
+        let second = use([1, 2]).complete()
+        let third = use([2, 3]).complete()
+
+        let result = use([1, 2]).perform(concat(second, third)).complete(asArray())
+
+        expect(result).toStrictEqual([1, 2, 1, 2, 2, 3])
+    })
+
     it('should zip raw values', () => {
         let result = use([1, 2, 3, 4])
             .perform(zip(['a', 'b', 'c', 'd'], [5, 6, 7, 8]))
@@ -41,6 +50,18 @@ describe('stream', () => {
     it('should zip stream values', () => {
         let second = use([1, 2]).perform(map((i) => i * 2))
         let third = use([2, 3]).perform(map((i) => '' + i * 3))
+
+        let result = use([1, 2]).perform(zip(second, third)).complete(asArray())
+
+        expect(result).toStrictEqual([
+            [1, 2, '6'],
+            [2, 4, '9'],
+        ])
+    })
+
+    it('should zip completed stream values', () => {
+        let second = use([2, 4]).complete()
+        let third = use(['6', '9']).complete()
 
         let result = use([1, 2]).perform(zip(second, third)).complete(asArray())
 
@@ -126,11 +147,7 @@ describe('stream', () => {
     it('should intersection with comparator', () => {
         let result = use([{ food: 'banana' }, { food: 'apple' }, { food: 'pear' }, { food: 'cherry' }])
             .perform(
-                intersection(
-                    [{ food: 'pear' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }],
-                    [{ food: 'avocado' }, { food: 'apple' }, { food: 'pineapple' }],
-                    (a, b) => a.food === b.food
-                )
+                intersection([{ food: 'pear' }, { food: 'apple' }, { food: 'banana' }, { food: 'peach' }], [{ food: 'avocado' }, { food: 'apple' }, { food: 'pineapple' }], (a, b) => a.food === b.food)
             )
             .complete(asArray())
         expect(result).toStrictEqual([{ food: 'apple' }])
