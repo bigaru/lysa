@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { asArray, chunk, distinct, drop, dropRight, dropWhile, filter, forEach, map, take, takeRight, takeWhile, use } from '../src/index.js'
+import { asArray, chunk, distinct, drop, dropRight, dropWhile, filter, map, take, takeRight, takeWhile, use } from '../src/index.js'
 
 describe('stream', () => {
     it('should filter', () => {
