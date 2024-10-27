@@ -1,7 +1,7 @@
 {
     "name": "@bigaru/lysa",
     "description": "A practical utility library for TypeScript.",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "author": "bigaru",
     "type": "module",
     "main": "./dist/cjs/index.js",
