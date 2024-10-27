@@ -4,8 +4,19 @@
     "version": "0.0.3",
     "author": "bigaru",
     "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "./dist/cjs/index.js",
+    "browser": "./dist/browser/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/types/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js",
+            "node": "./dist/cjs/index.js"
+        }
+    },
     "license": "Apache-2.0",
     "sideEffects": false,
     "files": [
@@ -25,13 +36,16 @@
         "functional",
         "utils",
         "utilities",
-        "toolkit"
+        "toolkit",
+        "lazy"
     ],
     "publishConfig": {
         "access": "public"
     },
     "scripts": {
-        "build": "bunx tsc",
+        "build:rest": "bunx tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+        "build:browser": "bun build --outdir ./dist/browser --sourcemap=linked ./src/index.ts",
+        "build": "bun run build:rest && bun run build:browser",
         "test": "bun test"
     },
     "devDependencies": {
