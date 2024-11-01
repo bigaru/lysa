@@ -3,6 +3,7 @@
         // Enable latest features
         "lib": ["ESNext", "DOM"],
         "target": "ESNext",
+        "moduleResolution": "Bundler",
         "moduleDetection": "force",
         "allowJs": true,
         "sourceMap": true,
@@ -19,5 +20,5 @@
         "noPropertyAccessFromIndexSignature": true
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "spec", "dist", "perf"]
+    "exclude": ["node_modules", "spec", "dist", "perf", "src/Lysa.global.ts"]
 }

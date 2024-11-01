@@ -5,7 +5,7 @@
     "author": "bigaru",
     "type": "module",
     "main": "./dist/cjs/index.js",
-    "browser": "./dist/browser/index.js",
+    "browser": "./dist/browser/Lysa.global.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/types/index.d.ts",
     "exports": {
@@ -44,7 +44,7 @@
     },
     "scripts": {
         "build:rest": "bunx tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-        "build:browser": "bun build --outdir ./dist/browser --sourcemap=linked ./src/index.ts",
+        "build:browser": "bun build --outdir ./dist/browser --sourcemap=linked ./src/Lysa.global.ts",
         "build": "bun run build:rest && bun run build:browser",
         "test": "bun test"
     },
