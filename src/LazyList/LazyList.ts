@@ -1,22 +1,28 @@
 import { lazyInit } from '../lazyInit'
 
-interface Node<ELEM> {
-    kind: 'node'
-    head: ELEM
-    tail: LazyList<ELEM>
-
+interface Pipe<ELEM> {
+    pipe(): LazyList<ELEM>
+    pipe<A>(...operators: [OP<ELEM, A>]): LazyList<A>
+    pipe<A, B>(...operators: [OP<ELEM, A>, OP<A, B>]): LazyList<B>
+    pipe<A, B, C>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>]): LazyList<C>
+    pipe<A, B, C, D>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, OP<C, D>]): LazyList<D>
     pipe(...operators: OP[]): LazyList<any>
 }
 
-interface Nil {
-    kind: 'nil'
+interface Node<ELEM> extends Pipe<ELEM> {
+    kind: 'node'
+    head: ELEM
+    tail: LazyList<ELEM>
+}
 
-    pipe(...operators: OP[]): LazyList<any>
+interface Nil extends Pipe<any> {
+    kind: 'nil'
 }
 
 type LazyList<ELEM> = Node<ELEM> | Nil
 
-type OP<A = any, B = any> = (node: LazyList<A>) => LazyList<B>
+type Operator<A, B> = (node: LazyList<A>) => LazyList<B>
+type OP<A = any, B = any> = Operator<A, B>
 
 class Node<ELEM> {
     kind: 'node' = 'node'
@@ -28,11 +34,6 @@ class Node<ELEM> {
         lazyInit('tail', tail, this)
     }
 
-    pipe(): LazyList<any>
-    pipe<A>(...operators: [OP<ELEM, A>]): LazyList<A>
-    pipe<A, B>(...operators: [OP<ELEM, A>, OP<A, B>]): LazyList<B>
-    pipe<A, B, C>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>]): LazyList<C>
-    pipe<A, B, C, D>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, OP<C, D>]): LazyList<D>
     pipe(...operators: OP[]): LazyList<any> {
         return operators.reduce((acc, fn) => fn(acc), this as LazyList<any>)
     }
@@ -44,3 +45,5 @@ const Nil: Nil = {
         return this
     },
 }
+
+export { Nil, Node, type LazyList, type Operator }
