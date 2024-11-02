@@ -1,4 +1,4 @@
-import { LazyList, Nil, Operator } from './LazyList'
+import { LazyList, Nil, Operator } from './LazyList.js'
 
 function map<A, B>(project: (item: A) => B): Operator<A, B> {
     return function operator(node: LazyList<A>): LazyList<B> {

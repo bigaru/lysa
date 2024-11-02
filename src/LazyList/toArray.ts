@@ -1,4 +1,4 @@
-import { LazyList, TerminalOperator } from './LazyList'
+import { LazyList, TerminalOperator } from './LazyList.js'
 
 function toArray<T>(): TerminalOperator<T, Array<T>> {
     return function operator(node: LazyList<T>): Array<T> {

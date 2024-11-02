@@ -1,4 +1,4 @@
-import { lazyInit } from '../lazyInit'
+import { lazyInit } from '../lazyInit.js'
 
 type Operator<A, B> = (node: LazyList<A>) => LazyList<B>
 type TerminalOperator<A, B> = (node: LazyList<A>) => B

@@ -1,4 +1,4 @@
-import { LazyList, Nil, Operator } from './LazyList'
+import { LazyList, Nil, Operator } from './LazyList.js'
 
 function filter<T>(predicate: (item: T) => boolean): Operator<T, T> {
     return function operator(node: LazyList<T>): LazyList<T> {

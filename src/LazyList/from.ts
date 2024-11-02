@@ -1,4 +1,4 @@
-import { LazyList, Nil } from './LazyList'
+import { LazyList, Nil } from './LazyList.js'
 
 function isFn<T>(item: T | (() => LazyList<T>)): item is () => LazyList<T> {
     return typeof item === 'function'
