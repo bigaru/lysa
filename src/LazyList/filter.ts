@@ -1,4 +1,4 @@
-import { LazyList, Nil, Node, Operator } from './LazyList'
+import { LazyList, Nil, Operator } from './LazyList'
 
 function filter<T>(predicate: (item: T) => boolean): Operator<T, T> {
     return function operator(node: LazyList<T>): LazyList<T> {
@@ -7,7 +7,7 @@ function filter<T>(predicate: (item: T) => boolean): Operator<T, T> {
         }
 
         if (predicate(node.head)) {
-            return new Node(
+            return new LazyList(
                 () => node.head,
                 () => node.tail.pipe(operator)
             )

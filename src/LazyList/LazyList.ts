@@ -1,31 +1,13 @@
 import { lazyInit } from '../lazyInit'
 
-interface Pipe<ELEM> {
-    pipe(): LazyList<ELEM>
-    pipe<A>(...operators: [OP<ELEM, A>]): LazyList<A>
-    pipe<A, B>(...operators: [OP<ELEM, A>, OP<A, B>]): LazyList<B>
-    pipe<A, B, C>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>]): LazyList<C>
-    pipe<A, B, C, D>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, OP<C, D>]): LazyList<D>
-    pipe(...operators: OP[]): LazyList<any>
-}
-
-interface Node<ELEM> extends Pipe<ELEM> {
-    kind: 'node'
-    head: ELEM
-    tail: LazyList<ELEM>
-}
-
-interface Nil extends Pipe<any> {
-    kind: 'nil'
-}
-
-type LazyList<ELEM> = Node<ELEM> | Nil
-
 type Operator<A, B> = (node: LazyList<A>) => LazyList<B>
-type OP<A = any, B = any> = Operator<A, B>
+type TerminalOperator<A, B> = (node: LazyList<A>) => B
 
-class Node<ELEM> {
-    kind: 'node' = 'node'
+type OP<A = any, B = any> = Operator<A, B>
+type TOP<A = any, B = any> = TerminalOperator<A, B>
+
+class LazyList<ELEM> {
+    kind = 'node'
     head!: ELEM
     tail!: LazyList<ELEM>
 
@@ -34,16 +16,31 @@ class Node<ELEM> {
         lazyInit('tail', tail, this)
     }
 
-    pipe(...operators: OP[]): LazyList<any> {
-        return operators.reduce((acc, fn) => fn(acc), this as LazyList<any>)
+    pipe(): LazyList<ELEM>
+    pipe<A>(...operators: [OP<ELEM, A>]): LazyList<A>
+    pipe<A>(...operators: [TOP<ELEM, A>]): A
+    pipe<A, B>(...operators: [OP<ELEM, A>, OP<A, B>]): LazyList<B>
+    pipe<A, B>(...operators: [OP<ELEM, A>, TOP<A, B>]): B
+    pipe<A, B, C>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>]): LazyList<C>
+    pipe<A, B, C>(...operators: [OP<ELEM, A>, OP<A, B>, TOP<B, C>]): C
+    pipe<A, B, C, D>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, OP<C, D>]): LazyList<D>
+    pipe<A, B, C, D>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, TOP<C, D>]): D
+    pipe<A, B, C, D>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, OP<C, D>, ...OP[]]): LazyList<any>
+    pipe<A, B, C, D, E>(...operators: [OP<ELEM, A>, OP<A, B>, OP<B, C>, OP<C, D>, ...OP[], TOP<any, E>]): E
+
+    pipe<T extends OP[], S extends TOP>(...operators: [...T, S?]): any {
+        return operators.reduce((acc, fn) => fn!(acc), this as any)
     }
 }
 
-const Nil: Nil = {
-    kind: 'nil' as 'nil',
-    pipe() {
+const Nil: LazyList<any> = {
+    kind: 'nil',
+    head: undefined as any,
+    tail: undefined as any,
+
+    pipe(): any {
         return this
     },
 }
 
-export { Nil, Node, type LazyList, type Operator }
+export { Nil, LazyList, type Operator, type TerminalOperator }
